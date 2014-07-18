@@ -31,6 +31,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -260,5 +261,11 @@ public class Inventory extends Fragment{
 		}
     	
     	return image;
+    }
+    
+    public void onDestroy() {
+        Log.i(TAG, "[ACTIVITY] onDestroy");
+        super.onDestroy();
+
     }
 }

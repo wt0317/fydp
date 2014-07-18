@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	private CharSequence mTitle;
 
-	static PhotoCaptureExample pcFragment;
+	static TempItemAdd pcFragment;
 	static Inventory inFragment;
 	
 	@Override
@@ -141,7 +141,7 @@ public class MainActivity extends ActionBarActivity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState){
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+			View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
 			
 			
@@ -164,7 +164,7 @@ public class MainActivity extends ActionBarActivity implements
 	            case 2:	
 	            	
 	            	if (pcFragment == null) {
-	            		pcFragment = new PhotoCaptureExample();
+	            		pcFragment = new TempItemAdd();
 	            	}	
                	getFragmentManager().beginTransaction()
            		.add(R.id.container, pcFragment)

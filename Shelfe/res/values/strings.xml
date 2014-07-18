@@ -9,5 +9,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
+    <string name="categories">Choose A Category...</string>
+    <string name="baby_food">Baby Food</string>
+    <string name="baking">Baking</string>
+    <string name="beer">Beer</string>
+    <string name="beverages">Beverages</string>
+	<string name="dairy">Dairy</string>
+	<string name="fruits">Fruits</string>
+    <string name="bread">Bread</string>
+	<string name="vegetables">Vegetables</string>
 
 </resources>
