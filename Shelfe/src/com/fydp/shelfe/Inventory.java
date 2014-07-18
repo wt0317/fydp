@@ -203,12 +203,12 @@ public class Inventory extends Fragment{
     private int expiryColor(String first, String second){
     	//defaultt green color
     	String color = "#32CD32";
-    	double firstInt = Double.parseDouble(first);
-    	double secondInt =  Double.parseDouble(second);
-    	if ((double)(firstInt/secondInt) <= .25){
+    	int firstInt = Integer.parseInt(first);
+    	int secondInt =  Integer.parseInt(second);
+    	if ((secondInt-firstInt) <= 172800){
     		color = "#FF0000";
-    	}else if((double)(firstInt/secondInt) <= .50){
-    		color = "#FBE031";
+    	}else if((secondInt-firstInt) <= 604800){
+    		color = "#999900";
     	}
     	
     	return Color.parseColor(color);
@@ -223,7 +223,7 @@ public class Inventory extends Fragment{
     	if ( firstInt == 0 || ((double)(firstInt/secondInt) <= .25)){
     		color = "#FF0000";
     	}else if((double)(firstInt/secondInt) <= .50){
-    		color = "#FBE031";
+    		color = "#999900";
     	}
     	
     	return Color.parseColor(color);
