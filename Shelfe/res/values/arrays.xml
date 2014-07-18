@@ -1,0 +1,14 @@
+<resources>
+    <string-array name="Categories">
+        <item>@string/baby_food</item>
+        <item>@string/baking</item>
+        <item>@string/beer</item>
+        <item>@string/beverages</item>
+        <item>@string/dairy</item>
+        <item>@string/fruits</item>
+        <item>@string/bread</item>
+        <item>@string/vegetables</item>
+    </string-array>
+
+
+</resources>
