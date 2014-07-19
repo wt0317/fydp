@@ -142,8 +142,8 @@ public class Inventory extends Fragment{
         InputStream inputStream = null;
 	    String result = null;
 	    try {
-
-	    	inputStream = new CallServer().execute(inputStream).get();
+	    	String call = "http://shelfe.netau.net/service/Service.php?method=getInventory&username=test&password=test";
+	    	inputStream = new CallServer().execute(call).get();
 	        //HttpEntity entity = response.getEntity();
 	
 	        //inputStream = entity.getContent();

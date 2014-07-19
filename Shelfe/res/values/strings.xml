@@ -18,5 +18,10 @@
 	<string name="fruits">Fruits</string>
     <string name="bread">Bread</string>
 	<string name="vegetables">Vegetables</string>
+	<string name="dayShort">DD</string>
+	<string name="monthShort">MM</string>
+	<string name="yearShort">YY</string>
+	
+	<string name="item_added">Item Added!</string>
 
 </resources>

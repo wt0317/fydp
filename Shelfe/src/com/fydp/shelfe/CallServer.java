@@ -16,19 +16,21 @@ import org.apache.http.params.BasicHttpParams;
 
 import android.os.AsyncTask;
 
-public class CallServer extends AsyncTask<InputStream, InputStream, InputStream> {
+public class CallServer extends AsyncTask<String, InputStream, InputStream> {
 	
-	InputStream instream;
+
 	
-	protected InputStream doInBackground(InputStream...params){
-		this.instream = params[0];
+	protected InputStream doInBackground(String...params){
+		InputStream instream = null;
+		String call = params[0];
 		
     	HttpClient httpclient = new DefaultHttpClient(new BasicHttpParams());
     	HttpGet request = new HttpGet();
     	
 	    URI website = null;
+		call.replaceAll("\\s","");
 		try {
-			website = new URI("http://shelfe.netau.net/service/Service.php?method=getInventory&username=test&password=test");
+				website = new URI(call);
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,6 +53,7 @@ public class CallServer extends AsyncTask<InputStream, InputStream, InputStream>
 	
 	    try {
 			inputStream = entity.getContent();
+		    entity.consumeContent();
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,7 +61,7 @@ public class CallServer extends AsyncTask<InputStream, InputStream, InputStream>
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    
+
         return inputStream;
     }
 
@@ -68,7 +71,7 @@ public class CallServer extends AsyncTask<InputStream, InputStream, InputStream>
 
     protected void onPostExecute(InputStream inputStream) {
         //showDialog("Downloaded " + result + " bytes");
-    	instream = inputStream;
+
     }
 
 

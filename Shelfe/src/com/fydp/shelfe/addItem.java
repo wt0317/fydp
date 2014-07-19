@@ -12,20 +12,24 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 
-public class addItem  extends AsyncTask<String, InputStream, InputStream> {
+public class AddItem  extends AsyncTask<String, InputStream, InputStream> {
 		
-		InputStream instream;
+		
 		
 		protected InputStream doInBackground(String...params){
+			InputStream instreams = null;
 			String URI = params[0];
 			
 	    	HttpClient httpclient = new DefaultHttpClient(new BasicHttpParams());
 	    	HttpGet request = new HttpGet();
 	    	
 		    URI website = null;
+		    URI.replaceAll("\\s","");
 			try {
 				website = new URI(URI);
 			} catch (URISyntaxException e) {
@@ -44,12 +48,12 @@ public class addItem  extends AsyncTask<String, InputStream, InputStream> {
 				e.printStackTrace();
 			}
 	        
-		    InputStream inputStream = null;
 	           
-		    HttpEntity entity = response.getEntity();
+		    HttpEntity entiti = response.getEntity();
 		
 		    try {
-				inputStream = entity.getContent();
+		    	instreams = entiti.getContent();
+		    		//EntityUtils.toString(entiti,HTTP.UTF_8);
 			} catch (IllegalStateException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -58,7 +62,7 @@ public class addItem  extends AsyncTask<String, InputStream, InputStream> {
 				e.printStackTrace();
 			}
 		    
-	        return inputStream;
+	        return instreams;
 	    }
 
 	    protected void onProgressUpdate(Integer... progress) {
@@ -67,7 +71,6 @@ public class addItem  extends AsyncTask<String, InputStream, InputStream> {
 
 	    protected void onPostExecute(InputStream inputStream) {
 	        //showDialog("Downloaded " + result + " bytes");
-	    	instream = inputStream;
 	    }
 
 
