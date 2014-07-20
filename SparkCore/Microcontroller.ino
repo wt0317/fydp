@@ -3,24 +3,25 @@ TCPClient client;
 byte server[] = { 74, 125, 224, 72 };
 
 //Load Cell Calibration Settings
-float aReading = 800.0;  
+float aReading = 819.2;  
 float aLoad = 10; //kg
-float bReading = 4000.0;
+float bReading = 4096.0;
 float bLoad = 50; //kg
-float previousLoad = 0.975;	//Initialized to weight (kg) with no items placed
+float previousLoad = 8.9111328125;	//Initialized to weight (kg) with no items placed
 
 //Initialize OPS Regions
 String aout = "";
 int const PHOTORESISTORS = 15;
 boolean previousOPSRegions[PHOTORESISTORS];
 boolean currentOPSRegions[PHOTORESISTORS];
-int tolerance = 1000;	
+int tolerance = 630;	
 int r0 = 0;             //value of select pin at (s0)
 int r1 = 0;             //value of select pin at (s1)
 int r2 = 0;             //value of select pin at (s2)
 int r3 = 0;             //value of select pin at (s3)
 
 void setup() {
+    delay(5000);
 
 	//Assign baud rate
 	Serial.begin(9600);
@@ -62,7 +63,18 @@ void sendWebService(String methodType, String JSON_OPSvalues, float weight) {
 		client.println("Host: shelfe.netau.net");
 		client.println("Cache-Control: no-cache");
 		client.println();
-	}
+    
+        bool serverReplied = false;
+        while (!serverReplied) {
+    		//Read from Web Service
+    	    while (client.available()) {
+    		    char c = client.read();
+    		    Serial.print(c);
+    		    serverReplied = true;
+    	    }
+        }
+        client.stop();
+    }
 
 	else
 	{
@@ -100,21 +112,22 @@ void loop() {
 		//Read photoresistor value
 		OPSvalue = analogRead(A0);
 		if (OPSvalue < tolerance) {
-			aout += "X ";
+			//aout += "X ";
 			currentOPSRegions[count] = true;
 		}
 		else {
-			aout += "- ";
+			//aout += "- ";
 			currentOPSRegions[count] = false;
 		}
+		aout += "-" + String(OPSvalue) + "- ";
 
 		//Format output
 		if (count % 3 == 2) {
-			Serial.println(aout);
+// 			Serial.println(aout);
 			aout = "";
 		}
 		if (count % 14 == 0) {
-			Serial.println("-----------");
+// 			Serial.println("-----------");
 		}
 
 	}
@@ -136,7 +149,7 @@ void loop() {
 	//1. Find newly occupied regions
 	//2. Issue GET request with weight difference and newly occupied regions
 	//3. Update previousLoad and previousOPSRegion
-	if (currentLoad > previousLoad) {
+	if (currentLoad > previousLoad + 0.5) {
 
 		Serial.println("Condition Satisfied: Current Load > Previous Load");
 		Serial.println(currentLoad, 5);
@@ -144,7 +157,7 @@ void loop() {
 
 		//Find newly occupied regions
 		for (int region=0; region<PHOTORESISTORS; region++) {
-			if (previousOPSRegions[region] != currentOPSRegions[region]) {
+			if (previousOPSRegions[region] != currentOPSRegions[region] && currentOPSRegions[region]) {
 				JSON_OPSvalues += String(region) + ",";
 				updateRequired = true;
 			}
@@ -173,16 +186,16 @@ void loop() {
 	//Condition: Weight decreased
 	//Procedure: 
 	//1. Find newly occupied regions
-	//2. Issue GET request with newly unoccupied regions
+	//2. Issue GET request with newly unoccupied regions    
 	//3. Update previousLoad and previousOPSRegion
-	else if (currentLoad < previousLoad) {
+	else if (currentLoad < previousLoad - 0.5) {
 		Serial.println("Condition Satisfied: Current Load < Previous Load");
 		Serial.println(currentLoad, 5);
 		Serial.println(previousLoad, 5);
 
 		//Find newly unoccupied regions
 		for (int region=0; region<PHOTORESISTORS; region++) {
-			if (previousOPSRegions[region] != currentOPSRegions[region]) {
+			if (previousOPSRegions[region] != currentOPSRegions[region] && !currentOPSRegions[region]) {
 				JSON_OPSvalues += String(region) + ",";
 				updateRequired = true;
 			}
@@ -204,12 +217,6 @@ void loop() {
 				previousOPSRegions[region] = currentOPSRegions[region];
 			}
 		}
-	}
-
-	//Read from Web Service
-	while (client.available()) {
-		char c = client.read();
-		Serial.print(c);
 	}
 
 	
