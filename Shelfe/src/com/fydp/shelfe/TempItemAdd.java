@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,7 +60,7 @@ public class TempItemAdd extends Fragment{
             Bundle savedInstanceState) 
     {
     	container.removeAllViews();
-    	Log.i("PhotoCapture", "onCreateView" );
+    	Log.i("TempItemAdd", "onCreateView" );
         //super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.temp_item_add_fragment, container, false);
        
@@ -87,7 +88,6 @@ public class TempItemAdd extends Fragment{
     {
     	Log.i("TempItemAdd", "buttonHandler()" );
 
-    	boolean success = false;
         InputStream inputStream = null;
  	    String result = null;
  	    CategoryId catId = new CategoryId();
@@ -107,37 +107,77 @@ public class TempItemAdd extends Fragment{
  	    			"&Name=" + _name.getText() + 
  	    			"&Price=" + _price.getText() + 
  	    			"&Override=false";
-	 	    	
- 	    	while (success == false){	 	    			
-	 	    	inputStream = new CallServer().execute(call).get();
-		        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-		        StringBuilder sb = new StringBuilder();
-		
-		        String line = null;
-		        while ((line = reader.readLine()) != null)
-		        {
-		            sb.append(line + "\n");
-		        }
-		        result = sb.toString();
+ 	    		call = call.replace(" ","_");
+	 	    	result = new CallServer().execute(call).get();
+//		        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+//		        StringBuilder sb = new StringBuilder();
+//		
+//		        String line = null;
+//		        while ((line = reader.readLine()) != null)
+//		        {
+//		            sb.append(line + "\n");
+//		        }
+//		        result = sb.toString();
 		        Log.i("TempItemAddAfter", result);
 	 	    	final JSONObject oneObject=new JSONObject(result);
 	 	    	
-	 	    	if (oneObject.getString("Success") == "true"){
-	 	    		success = true;
+	 	    	if (oneObject.getString("Success").equals("true")){
+	 	    	    _name.setText("");
+	 	    	    _category.setSelection(0);
+	 	    	    _edDay.setSelection(0);
+	 	    	    _edMonth.setSelection(0);
+	 	    	    _edYear.setSelection(0);
+	 	    	    _price.setText("");
 	 	    		Toast.makeText(getView().getContext(), R.string.item_added, Toast.LENGTH_LONG).show();
-	 	    	}else if (oneObject.getString("Error") == "MissingItem"){
-	 	    		
-	 	    		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getView().getContext());
+	 	    	}else if (oneObject.getString("Error").equals("MissingItem")){
+	 	    		Log.i("TempItemAddAfter", "MissingItem");
 
-	 	    		// Setting Dialog Title
-	 	    		alertDialog.setTitle("Grocery Warning!");
+	 	    		AlertDialog.Builder builder1 = new AlertDialog.Builder(getView().getContext());
+	 	            builder1.setMessage("An item is missing! Please put it in before adding another item.");
+	 	            builder1.setCancelable(true);
+	 	            builder1.setPositiveButton(R.string.yes,
+	 	                    new DialogInterface.OnClickListener() {
+	 	                public void onClick(DialogInterface dialog, int id) {
+	 	                	buttonHandler();
+	 	                	dialog.cancel();
+	 	                }
+	 	            });
+	 	            builder1.setNegativeButton(R.string.no,
+	 	                    new DialogInterface.OnClickListener() {
+	 	                public void onClick(DialogInterface dialog, int id) {
+	 	                    dialog.cancel();
+	 	                }
+	 	            });
 
-	 	    		// Setting Dialog Message
-	 	    		alertDialog.setMessage("There is currently an item outstanding.");
-	 	    		alertDialog.show();
+	 	            AlertDialog alert11 = builder1.create();
+	 	            alert11.show();
 	 	    		
-	 	    	}
- 	    	}
+	 	    	
+  	    	}else if (oneObject.getString("Error").equals("ItemOut")){
+ 	    		Log.i("TempItemAddAfter", "ItemOut");
+
+ 	    		AlertDialog.Builder builder1 = new AlertDialog.Builder(getView().getContext());
+ 	            builder1.setMessage(oneObject.getString("Name") + " is out, please put it back in!");
+ 	            builder1.setCancelable(true);
+ 	            builder1.setPositiveButton(R.string.yes,
+ 	                    new DialogInterface.OnClickListener() {
+ 	                public void onClick(DialogInterface dialog, int id) {
+ 	                	buttonHandler();
+ 	                }
+ 	            });
+ 	            builder1.setNegativeButton(R.string.no,
+ 	                    new DialogInterface.OnClickListener() {
+ 	                public void onClick(DialogInterface dialog, int id) {
+ 	                    dialog.cancel();
+ 	                }
+ 	            });
+
+ 	            AlertDialog alert11 = builder1.create();
+ 	            alert11.show();
+ 	    		
+ 	    	
+	    	}
+ 	    	
  	        //HttpEntity entity = response.getEntity();
  	
  	        //inputStream = entity.getContent();
@@ -153,16 +193,12 @@ public class TempItemAdd extends Fragment{
 // 	        result = sb.toString();
  	    } catch (Exception e) { 
  	        // Oops
+ 	    	e.printStackTrace();
  	    }
  	    finally {
  	        try{if(inputStream != null)inputStream.close();}catch(Exception squish){}
  	    }
- 	    _name.setText("");
- 	    _category.setSelection(0);
- 	    _edDay.setSelection(0);
- 	    _edMonth.setSelection(0);
- 	    _edYear.setSelection(0);
- 	    _price.setText("");
+
  	    
     	
     	

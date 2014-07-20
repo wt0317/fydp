@@ -23,5 +23,7 @@
 	<string name="yearShort">YY</string>
 	
 	<string name="item_added">Item Added!</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
 
 </resources>

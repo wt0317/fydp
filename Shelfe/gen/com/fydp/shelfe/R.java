@@ -1299,11 +1299,13 @@ containing a value of this type.
         public static final int monthShort=0x7f0a001f;
         public static final int navigation_drawer_close=0x7f0a0012;
         public static final int navigation_drawer_open=0x7f0a0011;
+        public static final int no=0x7f0a0023;
         public static final int title_section1=0x7f0a000e;
         public static final int title_section2=0x7f0a000f;
         public static final int title_section3=0x7f0a0010;
         public static final int vegetables=0x7f0a001d;
         public static final int yearShort=0x7f0a0020;
+        public static final int yes=0x7f0a0022;
     }
     public static final class style {
         /** 
