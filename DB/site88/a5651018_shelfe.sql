@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 19, 2014 at 09:13 PM
+-- Generation Time: Jul 21, 2014 at 02:13 PM
 -- Server version: 5.1.57
 -- PHP Version: 5.2.17
 
@@ -32,17 +32,18 @@ CREATE TABLE `inventory` (
   `DateAdded` int(12) NOT NULL DEFAULT '0',
   `ExpiryDate` int(12) NOT NULL DEFAULT '0',
   `username` varchar(45) COLLATE latin1_general_ci NOT NULL,
-  `Status` tinyint(1) NOT NULL DEFAULT '0',
+  `Status` int(3) NOT NULL DEFAULT '1',
   PRIMARY KEY (`ItemId`),
   KEY `username_idx` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=63 ;
 
 --
 -- Dumping data for table `inventory`
 --
 
-INSERT INTO `inventory` VALUES(4, 'Johnny_li', 7, 48.00, 37.77, 37.77, 1234567888, 1, 7, 1405818205, 1406865600, 'test', 0);
-INSERT INTO `inventory` VALUES(3, 'Johnny_li', 7, 48.00, 37.77, 37.77, 1234567888, 1, 6, 1405818205, 1406865600, 'test', 1);
+INSERT INTO `inventory` VALUES(60, 'New', 5, 7.79, 100.00, 100.00, 0000465468, -1, -1, 1405964612, 1418342400, 'test', 1);
+INSERT INTO `inventory` VALUES(62, 'New3', 1, 3.50, 150.00, 150.00, 0000000026, 1, 4, 1405964617, 1418342400, 'test', 0);
+INSERT INTO `inventory` VALUES(61, 'New', 5, 7.79, 100.00, 100.00, 0000465468, -1, -1, 1405964612, 1418342400, 'test', 1);
 
 -- --------------------------------------------------------
 
