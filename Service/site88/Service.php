@@ -156,6 +156,11 @@
 				return array("Authentication" => "Failed");
 			}
 			
+			if($Status == 0){
+				$DB_Connect->close();
+				return array("Success" => "false", "Error" => "Item must be checked out first.");
+			}
+			
 			mysql_query("DELETE FROM inventory WHERE username='".$username."' AND Status='".$Status."'");
 			
 			mysql_query("UPDATE inventory SET Status=Status-1 WHERE username='".$username."' AND Status>'".$Status."'");
