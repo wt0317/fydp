@@ -1,13 +1,15 @@
+#include "math.h"
+
 //Web Service Settings
 TCPClient client;
-byte server[] = { 74, 125, 224, 72 };
 
 //Load Cell Calibration Settings
+float const EPSILON = 0.01;
 float aReading = 819.2;  
 float aLoad = 10; //kg
 float bReading = 4096.0;
 float bLoad = 50; //kg
-float previousLoad = 8.9111328125;	//Initialized to weight (kg) with no items placed
+float previousWeight;	//Initialized to weight (kg) with no items placed
 
 //Initialize OPS Regions
 String aout = "";
@@ -21,10 +23,11 @@ int r2 = 0;             //value of select pin at (s2)
 int r3 = 0;             //value of select pin at (s3)
 
 void setup() {
-    delay(5000);
-
-	//Assign baud rate
+	
+    //Assign baud rate
 	Serial.begin(9600);
+
+    delay(5000);
 
 	//Assign I/O pins
 	pinMode(A0, INPUT);
@@ -38,12 +41,16 @@ void setup() {
 	for (int region=0; region<PHOTORESISTORS; region++) {
 		previousOPSRegions[region] = false;
 	}
+	
+	previousWeight = getStabilizedWeight();
 
 }
 
 void sendWebService(String methodType, String JSON_OPSvalues, float weight) {
 	String JSON;
 	String weightDifference = String(weight);
+	boolean retryRequired = true;
+	int retryCount = 0;
 
 	//Create request details
 	if (methodType.equals("itemIn")) {
@@ -54,6 +61,7 @@ void sendWebService(String methodType, String JSON_OPSvalues, float weight) {
 	}
 
 	//Connect to Web Service
+	do {
 	if (client.connect("shelfe.netau.net", 80)) {
 
 		Serial.println("Connected!");
@@ -63,37 +71,36 @@ void sendWebService(String methodType, String JSON_OPSvalues, float weight) {
 		client.println("Host: shelfe.netau.net");
 		client.println("Cache-Control: no-cache");
 		client.println();
-    
-        bool serverReplied = false;
-        while (!serverReplied) {
+
+		bool serverReplied = false;
+		while (!serverReplied) {
     		//Read from Web Service
-    	    while (client.available()) {
-    		    char c = client.read();
-    		    Serial.print(c);
-    		    serverReplied = true;
-    	    }
-        }
-        client.stop();
+    		while (client.available()) {
+    			char c = client.read();
+    			Serial.print(c);
+    			serverReplied = true;
+    		}
+    	}
+    	client.stop();
+    	retryRequired = false;
     }
 
-	else
-	{
-		Serial.println("Connection failed");
-	}
+    else
+    {
+        delay(200);
+        retryCount++;
+    	Serial.println("Connection failed.");
+    	Serial.print("Retrying: ");
+    	Serial.println(retryCount);
+    	
+    }
+    }while(retryRequired == true || retryCount==6);
 }
 
-void loop() {
-
+//Read all photoresistors
+void readOPS() {
 	int OPSvalue;
-	float LCvalue;
-	float currentLoad;
-	float weightDifference;
-	String JSON_OPSvalues = "";
-	boolean updateRequired = false;
 
-	//*******************
-	//PHOTORESISTOR CODE
-	//********************
 	for (int count=0; count<PHOTORESISTORS; count++) {
 
 		//Perform bit shifting for select lines
@@ -123,37 +130,69 @@ void loop() {
 
 		//Format output
 		if (count % 3 == 2) {
-// 			Serial.println(aout);
+			//Serial.println(aout);
 			aout = "";
 		}
 		if (count % 14 == 0) {
-// 			Serial.println("-----------");
+			//Serial.println("-----------");
 		}
-
 	}
+}
+
+//Get a stable weight value
+//Condition: 5 consecutive weight values
+float getStabilizedWeight() {
+	float LCvalue;
+	float currentWeights[5];
+	
+	Serial.println("Waiting for weight to stabilize...");
+	
+	for (int count = 0 ; count < arraySize(currentWeights); count++) {
+		LCvalue = analogRead(A1);
+		currentWeights[count] = ((bLoad - aLoad)/(bReading - aReading))*(LCvalue - aReading) + aLoad;
+
+		if(count > 0 && abs(currentWeights[count]-currentWeights[count-1]) > EPSILON) {
+			count = 0;	
+		}	
+	}
+	
+	Serial.println("Weight stabilized!");
+
+	return currentWeights[4];
+}
+
+void loop() {
+
+	float LCvalue;
+	float currentWeight;
+	float weightDifference;
+	String JSON_OPSvalues = "";
+	boolean updateRequired = false;
+
+	readOPS();
 
 	//***************
 	//LOAD CELL CODE
 	//***************
 	LCvalue = analogRead(A1);
-	currentLoad = ((bLoad - aLoad)/(bReading - aReading))*(LCvalue - aReading) + aLoad;
+	currentWeight = ((bLoad - aLoad)/(bReading - aReading))*(LCvalue - aReading) + aLoad;
 	//RE-ENABLE THIS!
 	Serial.print("Load Cell Reading: ");
 	Serial.print(LCvalue);
 	Serial.print("Load: ");
-	Serial.println(currentLoad, 5);
+	Serial.println(currentWeight, 5);
 
 	//Send data to Web Service because new item was placed
 	//Condition: Weight increased
 	//Procedure: 
 	//1. Find newly occupied regions
 	//2. Issue GET request with weight difference and newly occupied regions
-	//3. Update previousLoad and previousOPSRegion
-	if (currentLoad > previousLoad + 0.5) {
+	//3. Update previousWeight and previousOPSRegion
+	if (currentWeight > previousWeight + 0.03) {
 
-		Serial.println("Condition Satisfied: Current Load > Previous Load");
-		Serial.println(currentLoad, 5);
-		Serial.println(previousLoad, 5);
+		Serial.println("Condition Satisfied: Current Weight > Previous Weight");
+		Serial.println(currentWeight, 5);
+		Serial.println(previousWeight, 5);
 
 		//Find newly occupied regions
 		for (int region=0; region<PHOTORESISTORS; region++) {
@@ -164,6 +203,9 @@ void loop() {
 		}
 
 		if(updateRequired) {
+		    
+		    currentWeight = getStabilizedWeight();
+		    
 			//Delete the last comma
 			String hello = JSON_OPSvalues.substring(0, JSON_OPSvalues.length() - 1);
 
@@ -171,11 +213,11 @@ void loop() {
 			Serial.println(hello);
 
 			//Issue GET request with weight differences and new occupied region
-			weightDifference = currentLoad - previousLoad;
+			weightDifference = currentWeight - previousWeight;
 			sendWebService("itemIn", hello, weightDifference);
 
-			//Update previousLoad and previousOPSRegions
-			previousLoad = currentLoad;
+			//Update previousWeight and previousOPSRegions
+			previousWeight = currentWeight;
 			for (int region = 0; region<PHOTORESISTORS; region++) {
 				previousOPSRegions[region] = currentOPSRegions[region];
 			}	
@@ -187,11 +229,11 @@ void loop() {
 	//Procedure: 
 	//1. Find newly occupied regions
 	//2. Issue GET request with newly unoccupied regions    
-	//3. Update previousLoad and previousOPSRegion
-	else if (currentLoad < previousLoad - 0.5) {
-		Serial.println("Condition Satisfied: Current Load < Previous Load");
-		Serial.println(currentLoad, 5);
-		Serial.println(previousLoad, 5);
+	//3. Update previousWeight and previousOPSRegion
+	else if (currentWeight < previousWeight - 0.03) {
+		Serial.println("Condition Satisfied: Current Weight < Previous Weight");
+		Serial.println(currentWeight, 5);
+		Serial.println(previousWeight, 5);
 
 		//Find newly unoccupied regions
 		for (int region=0; region<PHOTORESISTORS; region++) {
@@ -202,6 +244,9 @@ void loop() {
 		}
 
 		if(updateRequired) {
+		    
+		    currentWeight = getStabilizedWeight();
+		    
 			//Delete the last comma
 			String hello2 = JSON_OPSvalues.substring(0, JSON_OPSvalues.length() - 1);
 
@@ -211,15 +256,14 @@ void loop() {
 			//Issue GET request with newly unoccupied regions
 			sendWebService("itemOut", hello2, 0);
 
-			//Update previousLoad and previousOPSRegions
-			previousLoad = currentLoad;
+			//Update previousWeight and previousOPSRegions
+			previousWeight = currentWeight;
 			for (int region = 0; region<PHOTORESISTORS; region++) {
 				previousOPSRegions[region] = currentOPSRegions[region];
 			}
 		}
 	}
 
-	
 	//Clean-up
 	//delay(300);	//Wait for fluctuations to settle before polling sensors again
 
