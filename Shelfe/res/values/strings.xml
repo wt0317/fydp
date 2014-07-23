@@ -7,7 +7,7 @@
     <string name="title_section3">UPC Scanner</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
+    <string name="action_example">Clear Inventory</string>
     <string name="action_settings">Settings</string>
     <string name="categories">Choose A Category...</string>
     <string name="baby_food">Baby Food</string>

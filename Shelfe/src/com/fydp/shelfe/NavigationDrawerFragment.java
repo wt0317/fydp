@@ -1,10 +1,20 @@
 package com.fydp.shelfe;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
+
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
@@ -272,7 +282,32 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 
 		if (item.getItemId() == R.id.action_example) {
-			Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT)
+			InputStream inputStream = null;
+			try {
+		    	String call = "http://shelfe.netau.net/service/Service.php?method=clearInventory&username=test&password=test";
+		    	new CallServer().execute(call);
+
+		    } catch (Exception e) { 
+		        // Oops
+		    }
+		    finally {
+		        try{if(inputStream != null)inputStream.close();}catch(Exception squish){}
+		    }
+		    FragmentManager fragmentManager = getFragmentManager();
+		    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		    Inventory newFragment = null;
+			try {
+				newFragment = new Inventory();
+			} catch (JSONException
+					| URISyntaxException | IOException | ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		    transaction.replace(R.id.main, newFragment);
+		    transaction.addToBackStack(null);
+		    transaction.commit();
+			Toast.makeText(getActivity(), "Inventory Cleared", Toast.LENGTH_LONG)
 					.show();
 			return true;
 		}

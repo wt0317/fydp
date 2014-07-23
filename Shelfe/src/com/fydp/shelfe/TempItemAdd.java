@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -71,10 +73,11 @@ public class TempItemAdd extends Fragment{
         _edYear = ( Spinner ) rootView.findViewById( R.id.year );
         _price = ( EditText ) rootView.findViewById( R.id.price );
         _button = ( Button ) rootView.findViewById( R.id.add );
+		
         _button.setOnClickListener( new View.OnClickListener(){
         	public void onClick( View view ){
         		Log.i("TempItemAdd", "ButtonClickHandler.onClick()" );
-        		buttonHandler();
+        		buttonHandler(false);
         	}
         } );
 
@@ -84,7 +87,7 @@ public class TempItemAdd extends Fragment{
     
 
     
-    protected void buttonHandler()
+    protected void buttonHandler(boolean override)
     {
     	Log.i("TempItemAdd", "buttonHandler()" );
 
@@ -106,7 +109,8 @@ public class TempItemAdd extends Fragment{
  	    			"&ExpiryDate=" + epoch + 
  	    			"&Name=" + _name.getText() + 
  	    			"&Price=" + _price.getText() + 
- 	    			"&Override=false";
+ 	    			//"&Override=" + Boolean.toString(override);
+ 	    			"&Override=true";
  	    		call = call.replace(" ","_");
 	 	    	result = new CallServer().execute(call).get();
 //		        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
@@ -138,7 +142,7 @@ public class TempItemAdd extends Fragment{
 	 	            builder1.setPositiveButton(R.string.yes,
 	 	                    new DialogInterface.OnClickListener() {
 	 	                public void onClick(DialogInterface dialog, int id) {
-	 	                	buttonHandler();
+	 	                	buttonHandler(false);
 	 	                	dialog.cancel();
 	 	                }
 	 	            });
@@ -157,12 +161,12 @@ public class TempItemAdd extends Fragment{
  	    		Log.i("TempItemAddAfter", "ItemOut");
 
  	    		AlertDialog.Builder builder1 = new AlertDialog.Builder(getView().getContext());
- 	            builder1.setMessage(oneObject.getString("Name") + " is out, please put it back in!");
+ 	            builder1.setMessage(oneObject.getString("Name") + " is out, would you like to add a new item anyway?");
  	            builder1.setCancelable(true);
  	            builder1.setPositiveButton(R.string.yes,
  	                    new DialogInterface.OnClickListener() {
  	                public void onClick(DialogInterface dialog, int id) {
- 	                	buttonHandler();
+ 	                	buttonHandler(true);
  	                }
  	            });
  	            builder1.setNegativeButton(R.string.no,

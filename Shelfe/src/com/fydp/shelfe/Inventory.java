@@ -46,7 +46,7 @@ public class Inventory extends Fragment{
 	private static final String TAG = "com.sim.Inventory";
 	
 	public ArrayList<Grocery> groceries;
-	
+	private String lastName = "";
 	public Inventory() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
 	   	 Log.i(TAG, "[ACTIVITY] Inventory");
 	   	 
@@ -109,7 +109,7 @@ public class Inventory extends Fragment{
   	         
   	         
   	         name.setText(grocery.getName());
-  	         amount.setText(new DecimalFormat("##.##").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
+  	         amount.setText(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
 	            
   	         Date date = new Date(Long.parseLong(grocery.getExpiryDate())*1000L);
 	         DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -151,19 +151,7 @@ public class Inventory extends Fragment{
 	    try {
 	    	String call = "http://shelfe.netau.net/service/Service.php?method=getInventory&username=test&password=test";
 	    	result = new CallServer().execute(call).get();
-	        //HttpEntity entity = response.getEntity();
-	
-	        //inputStream = entity.getContent();
-	        // json is UTF-8 by default
-//	        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-//	        StringBuilder sb = new StringBuilder();
-//	
-//	        String line = null;
-//	        while ((line = reader.readLine()) != null)
-//	        {
-//	            sb.append(line + "\n");
-//	        }
-//	        result = sb.toString();
+
 	    } catch (Exception e) { 
 	        // Oops
 	    }
@@ -185,23 +173,34 @@ public class Inventory extends Fragment{
 			        try {
 			            JSONObject oneObject = inventory.getJSONObject(j);
 			            // Pulling items from the array
-			            grocery.setCurrentAmount(oneObject.getString("CurrentAmount"));
-			            grocery.setInitialAmount(oneObject.getString("InitialAmount"));
-			            grocery.setBarcode(oneObject.getString("Barcode"));
-			            grocery.setCategory(oneObject.getString("CategoryId"));
-			            
-			                
-			            // Formats the date in the CET timezone   
-			           //String myDate = df2.format(oneObject.getString("ExpiryDate"));
-			            
-			            grocery.setExpiryDate(oneObject.getString("ExpiryDate"));		            
-			            grocery.setName(oneObject.getString("Name").replace("_", " "));
-			            grocery.setPrice(oneObject.getString("Price"));
-			            
+			            if (!oneObject.getString("Name").equals(lastName)){
+			            	
+				            
+				            grocery.setCurrentAmount(oneObject.getString("CurrentAmount"));
+				            grocery.setInitialAmount(oneObject.getString("InitialAmount"));
+				            grocery.setBarcode(oneObject.getString("Barcode"));
+				            grocery.setCategory(oneObject.getString("CategoryId"));
+				            
+				                
+				            // Formats the date in the CET timezone   
+				           //String myDate = df2.format(oneObject.getString("ExpiryDate"));
+				            
+				            grocery.setExpiryDate(oneObject.getString("ExpiryDate"));
+				            if (Integer.parseInt(oneObject.getString("Status")) == 0){
+				            	grocery.setName(oneObject.getString("Name").replace("_", " ") + " (Checked Out)");
+				            }else{	
+				            	grocery.setName(oneObject.getString("Name").replace("_", " "));
+				            }
+				            grocery.setPrice(oneObject.getString("Price"));
+				            groceries.add(grocery);
+				            lastName = oneObject.getString("Name");
+			            }else{
+			            	lastName = oneObject.getString("Name");
+			            }
 			        } catch (JSONException e) {
 			            // Oops
 			        }
-			        groceries.add(grocery);
+			        
 			    }
 		    }
 	    }
