@@ -17,7 +17,7 @@ import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 
-public class AddItem  extends AsyncTask<String, InputStream, InputStream> {
+public class addItem  extends AsyncTask<String, InputStream, InputStream> {
 		
 		
 		

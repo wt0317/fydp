@@ -111,6 +111,29 @@ public class MainActivity extends ActionBarActivity implements
 		if (id == R.id.action_settings) {
 			return true;
 		}
+		if (id == R.id.action_refresh) {
+			try {
+				Inventory inventory = new Inventory();
+				FragmentManager fragmentManager = getSupportFragmentManager();
+				fragmentManager.beginTransaction().replace(R.id.container, inventory).commit();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
