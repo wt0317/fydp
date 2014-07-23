@@ -176,7 +176,7 @@
 			while($ShelfIds = mysql_fetch_array($getShelfIds)) {
 				$ShelfId = $ShelfIds['ShelfId'];
 				
-				$getInventory = mysql_query("SELECT * FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."'");
+				$getInventory = mysql_query("SELECT * FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' ORDER BY Name, ShelfRegion");
 				
 				while($Inventory = mysql_fetch_array($getInventory)){
 					$iArray = $Format->addInventoryArray($iArray, $Inventory['InitialAmount'], $Inventory['CurrentAmount'], $Inventory['Barcode'], $Inventory['CategoryId'], $Inventory['DateAdded'], $Inventory['ExpiryDate'], $Inventory['Name'], $Inventory['Price'], $Inventory['ShelfRegion'], $Inventory['Status']);
