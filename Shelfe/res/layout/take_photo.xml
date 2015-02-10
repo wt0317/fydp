@@ -19,9 +19,15 @@
 	    <ImageView android:id="@+id/image"
 	    		   android:layout_width="fill_parent"
 	    		   android:layout_height="wrap_content"/>
+
     		   
    	</RelativeLayout>
-    		   
+	    
+    <TextView android:id="@+id/textResult"
+        	  android:layout_width="fill_parent"
+        	  android:layout_height="wrap_content"
+        	  android:gravity="center_horizontal"/>
+	        		   
 	<Button android:id="@+id/button"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"

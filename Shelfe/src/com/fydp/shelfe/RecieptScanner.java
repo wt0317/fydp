@@ -1,20 +1,30 @@
 package com.fydp.shelfe;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,10 +40,10 @@ public class RecieptScanner extends Fragment
 	protected ImageView _image;
 	protected TextView _field;
 	protected String _path;
+	protected String textResult;
 	protected boolean _taken;
 	
 	protected static final String PHOTO_TAKEN	= "photo_taken";
-		
 	
 	public RecieptScanner(){
 		
@@ -45,6 +55,7 @@ public class RecieptScanner extends Fragment
     {
     	Log.i("PhotoCapture", "onCreateView" );
         //super.onCreate(savedInstanceState);
+    	container.removeAllViews();
         View rootView = inflater.inflate(R.layout.take_photo, container, false);
        
         _image = ( ImageView ) rootView.findViewById( R.id.image );
@@ -52,8 +63,8 @@ public class RecieptScanner extends Fragment
         _button = ( Button ) rootView.findViewById( R.id.button );
         _button.setOnClickListener( new ButtonClickHandler() );
         
-        _path = Environment.getExternalStorageDirectory() + "/images/make_machine_example.jpg";
-        
+        _path = Environment.getExternalStorageDirectory() + "/tessdata/make_machine_example.jpg";
+
         return rootView;
     }
     
@@ -68,96 +79,105 @@ public class RecieptScanner extends Fragment
     protected void startCameraActivity()
     {
     	Log.i("MakeMachine", "startCameraActivity()" );
-    	File file = new File( _path );
-    	Uri outputFileUri = Uri.fromFile( file );
-    	
-    	Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE );
-    	intent.putExtra( MediaStore.EXTRA_OUTPUT, outputFileUri );
-    	
-    	startActivityForResult( intent, 0 );
+        File file = new File( _path );
+        File f = new File(Environment.getExternalStorageDirectory(),
+                "tessdata");
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        Uri outputFileUri = Uri.fromFile( file );
+        	
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE );
+        intent.putExtra( MediaStore.EXTRA_OUTPUT, outputFileUri );
+        	
+        startActivityForResult( intent, 0 );
+        
     }
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) 
     {	
+    	
     	Log.i( "MakeMachine", "resultCode: " + resultCode );
-    	switch( resultCode )
-    	{
-    		case 0:
-    			Log.i( "MakeMachine", "User cancelled" );
-    			break;
-    			
-    		case -1:
+        switch( resultCode )
+        {
+        	case 0:
+        		Log.i( "MakeMachine", "User cancelled" );
+        		break;
+        			
+        	case -1:
 			try {
 				onPhotoTaken();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    			break;
-    	}
+        }
+        
     }
-    
+ 
     protected void onPhotoTaken() throws IOException
     {
-    	Log.i( "MakeMachine", "onPhotoTaken" );
+    	Log.i( "RecieptScanner", "onPhotoTaken" );
+        _taken = true;
     	
-    	_taken = true;
-    	
-    	BitmapFactory.Options options = new BitmapFactory.Options();
+        BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
-    	
-    	Bitmap bitmap = BitmapFactory.decodeFile( _path, options );
-    	
-    	_image.setImageBitmap(bitmap);
-    	
-    	_field.setVisibility( View.GONE );
-    	
-    	// _path = path to the image to be OCRed
-    	ExifInterface exif = new ExifInterface(_path);
-    	int exifOrientation = exif.getAttributeInt(
-    	        ExifInterface.TAG_ORIENTATION,
-    	        ExifInterface.ORIENTATION_NORMAL);
+        	
+        Bitmap bitmap = BitmapFactory.decodeFile( _path, options );
+        _image.setImageBitmap(bitmap);
+        	
+        _field.setVisibility( View.GONE );
+        
+        //_path = path to the image to be OCRed
+    		ExifInterface exif = new ExifInterface(_path);
+    		int exifOrientation = exif.getAttributeInt(
+    		        ExifInterface.TAG_ORIENTATION,
+    		        ExifInterface.ORIENTATION_NORMAL);
 
-    	int rotate = 0;
+    		int rotate = 0;
 
-    	switch (exifOrientation) {
-    	case ExifInterface.ORIENTATION_ROTATE_90:
-    	    rotate = 90;
-    	    break;
-    	case ExifInterface.ORIENTATION_ROTATE_180:
-    	    rotate = 180;
-    	    break;
-    	case ExifInterface.ORIENTATION_ROTATE_270:
-    	    rotate = 270;
-    	    break;
-    	}
+    		switch (exifOrientation) {
+    		case ExifInterface.ORIENTATION_ROTATE_90:
+    		    rotate = 90;
+    		    break;
+    		case ExifInterface.ORIENTATION_ROTATE_180:
+    		    rotate = 180;
+    		    break;
+    		case ExifInterface.ORIENTATION_ROTATE_270:
+    		    rotate = 270;
+    		    break;
+    		}
 
-    	if (rotate != 0) {
-    	    int w = bitmap.getWidth();
-    	    int h = bitmap.getHeight();
+    		if (rotate != 0) {
+    		    int w = bitmap.getWidth();
+    		    int h = bitmap.getHeight();
 
-    	    // Setting pre rotate
-    	    Matrix mtx = new Matrix();
-    	    mtx.preRotate(rotate);
+    		    // Setting pre rotate
+    		    Matrix mtx = new Matrix();
+    		    mtx.preRotate(rotate);
 
-    	    // Rotating Bitmap & convert to ARGB_8888, required by tess
-    	    bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
-    	}
-    	bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-    	
-    	
-    	TessBaseAPI baseApi = new TessBaseAPI();
-    	// DATA_PATH = Path to the storage
-    	// lang = for which the language data exists, usually "eng"
-    	baseApi.init("/mnt/sdcard/tesseract/tessdata/eng.traineddata", "eng");
-    	baseApi.setImage(bitmap);
-    	String recognizedText = baseApi.getUTF8Text();
-    	baseApi.end();
-    	
-    	Log.i( "RecText", recognizedText);
+    		    // Rotating Bitmap & convert to ARGB_8888, required by tess
+    		    bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
+    		}
+    		bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+    		
+    		copyAssets();
+    		
+    		TessBaseAPI baseApi = new TessBaseAPI();
+    		// DATA_PATH = Path to the storage	
+    		// lang = for which the language data exists, usually "eng"
+    		baseApi.init((Environment.getExternalStorageDirectory()).toString(), "eng");
+    		// Eg. baseApi.init("/mnt/sdcard/tesseract/tessdata/eng.traineddata", "eng");
+    		baseApi.setImage(bitmap);
+    		String recognizedText = baseApi.getUTF8Text();
+    		baseApi.end();
+    		/*TextView result = (TextView) this.getActivity().findViewById(R.id.textResult);
+    		result.setText(recognizedText);
+    		this.getActivity().setContentView(R.layout.take_photo);*/
+    		Log.i( "ReadText", "text: " + recognizedText );
     }
-    
+
     protected void onRestoreInstanceState( Bundle savedInstanceState) throws IOException{
     	Log.i( "MakeMachine", "onRestoreInstanceState()");
     	if( savedInstanceState.getBoolean( RecieptScanner.PHOTO_TAKEN ) ) {
@@ -169,4 +189,51 @@ public class RecieptScanner extends Fragment
 	public void onSaveInstanceState( Bundle outState ) {
     	outState.putBoolean( RecieptScanner.PHOTO_TAKEN, _taken );
     }
+    private void copyAssets() {
+        AssetManager assetManager = this.getActivity().getAssets();
+        String[] files = null;
+        String root = "tessdata";
+        try {
+            files = assetManager.list(root);
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+        }
+        for(String filename : files) {
+   
+	            InputStream in = null;
+	            OutputStream out = null;
+	            try {
+	              in = assetManager.open(root + "/" + filename);
+	              File outFile = new File(Environment.getExternalStorageDirectory(), root + "/" + filename);
+	              out = new FileOutputStream(outFile);
+	              copyFile(in, out);
+	            } catch(IOException e) {
+	                Log.e("tag", "Failed to copy asset file: " + filename, e);
+	            }     
+	            finally {
+	                if (in != null) {
+	                    try {
+	                        in.close();
+	                    } catch (IOException e) {
+	                        // NOOP
+	                    }
+	                }
+	                if (out != null) {
+	                    try {
+	                        out.close();
+	                    } catch (IOException e) {
+	                        // NOOP
+	                    }
+	                }
+	            }  
+        	//}
+        }
+    }
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+          out.write(buffer, 0, read);
+        }
+    }       
 }

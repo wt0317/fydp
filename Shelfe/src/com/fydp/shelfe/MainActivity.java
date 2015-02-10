@@ -41,8 +41,10 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	private CharSequence mTitle;
 
+	static RecieptScanner rcFragment;
 	static TempItemAdd pcFragment;
 	static Inventory inFragment;
+	static BarcodeScanner bsFragment;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -186,13 +188,28 @@ public class MainActivity extends ActionBarActivity implements
 	            	break;
 	            case 2:	
 	            	
-	            	if (pcFragment == null) {
-	            		pcFragment = new TempItemAdd();
-	            	}	
-               	getFragmentManager().beginTransaction()
-           		.add(R.id.container, pcFragment)
-           		.commit();
+//	            	if (pcFragment == null) {
+//	            		pcFragment = new TempItemAdd();
+//	            	}	
+//               	getFragmentManager().beginTransaction()
+//           		.add(R.id.container, pcFragment)
+//           		.commit();
+               	if (rcFragment == null) {
+            		rcFragment = new RecieptScanner();
+            	}	
+           	getFragmentManager().beginTransaction()
+       		.add(R.id.container, rcFragment)
+       		.commit();
+	                break;
 	                
+	           case 3:	
+
+               	if (bsFragment == null) {
+            		bsFragment = new BarcodeScanner();
+            	}	
+           	getFragmentManager().beginTransaction()
+       		.add(R.id.container, bsFragment)
+       		.commit();
 	                break;
 	
 	           }
