@@ -207,9 +207,11 @@ public class MainActivity extends ActionBarActivity implements
                	if (bsFragment == null) {
             		bsFragment = new BarcodeScanner();
             	}	
+            if (!bsFragment.isAdded()){
            	getFragmentManager().beginTransaction()
        		.add(R.id.container, bsFragment)
        		.commit();
+            }
 	                break;
 	
 	           }
