@@ -80,6 +80,8 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case 3:
 			mTitle = getString(R.string.title_section3);
+		case 4:
+			mTitle = getString(R.string.title_section4);
 			break;
 		}
 	}
@@ -188,12 +190,6 @@ public class MainActivity extends ActionBarActivity implements
 	            	break;
 	            case 2:	
 	            	
-//	            	if (pcFragment == null) {
-//	            		pcFragment = new TempItemAdd();
-//	            	}	
-//               	getFragmentManager().beginTransaction()
-//           		.add(R.id.container, pcFragment)
-//           		.commit();
                	if (rcFragment == null) {
             		rcFragment = new RecieptScanner();
             	}	
@@ -206,12 +202,21 @@ public class MainActivity extends ActionBarActivity implements
 
                	if (bsFragment == null) {
             		bsFragment = new BarcodeScanner();
-            	}	
+               	}	
             if (!bsFragment.isAdded()){
            	getFragmentManager().beginTransaction()
        		.add(R.id.container, bsFragment)
        		.commit();
             }
+               	
+               	break;
+	           case 4:
+	            	if (pcFragment == null) {
+           		pcFragment = new TempItemAdd();
+           	}	
+          	getFragmentManager().beginTransaction()
+      		.add(R.id.container, pcFragment)
+      		.commit();
 	                break;
 	
 	           }

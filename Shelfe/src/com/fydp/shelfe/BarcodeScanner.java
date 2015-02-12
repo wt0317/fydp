@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class BarcodeScanner extends Fragment {
  
@@ -47,13 +49,16 @@ public class BarcodeScanner extends Fragment {
 	        startActivityForResult(intent, SCANNER_REQUEST_CODE);		
     	}
     }
-    
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
            if (requestCode == SCANNER_REQUEST_CODE) {
               if (resultCode == RESULT_OK) {
                   // Handle successful scan
                   String contents = intent.getStringExtra("SCAN_RESULT");
                   Log.i("BarcodeScanner","Scan results: " + contents);
+                  Toast toast = Toast.makeText(this.getActivity(), "Content: " + contents, Toast.LENGTH_LONG);
+                  toast.setGravity(Gravity.TOP, 25, 400);
+                  toast.show();
                   String formatName = intent.getStringExtra("SCAN_RESULT_FORMAT");
                   byte[] rawBytes = intent.getByteArrayExtra("SCAN_RESULT_BYTES");
                   int intentOrientation = intent.getIntExtra("SCAN_RESULT_ORIENTATION", Integer.MIN_VALUE);
