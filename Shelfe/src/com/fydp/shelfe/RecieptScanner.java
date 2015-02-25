@@ -175,10 +175,6 @@ public class RecieptScanner extends Fragment
     		baseApi.setImage(bitmap);
     		String recognizedText = baseApi.getUTF8Text();
     		baseApi.end();
-    		/*TextView result = (TextView) this.getActivity().findViewById(R.id.textResult);
-    		result.setText(recognizedText);
-    		this.getActivity().setContentView(R.layout.take_photo);*/
-    		
     		
     		itemSearch(recognizedText);
     }
@@ -191,10 +187,17 @@ public class RecieptScanner extends Fragment
 	    	Pattern p = Pattern.compile("(.+)([^$]\\d+(\\.|\\‘|\\,)\\d{2})");
 	    	Matcher mr = p.matcher(items);
 	    	while (mr.find()) {
-		        Fragment itemFrag = new TempItemAdd(); 
+	    		String name = mr.group(1);
+	    		String price = mr.group(2);
+	    		Fragment itemFrag = new TempItemAdd(); 
 		        Bundle bundle = new Bundle();
-		        bundle.putString("price", mr.group(2) );
-		        bundle.putString("name", mr.group(1) );
+		        if (price.contains(",")){
+		        	price.replace(",", ".");
+		        }else if (price.contains("‘")){
+		        	price.replace("‘", ".");
+		        }
+		        bundle.putString("price", price );
+		        bundle.putString("name", name);
 		        itemFrag.setArguments(bundle);
 		        // consider using Java coding conventions (upper first char class names!!!)
 		        FragmentTransaction transaction = getFragmentManager().beginTransaction();
