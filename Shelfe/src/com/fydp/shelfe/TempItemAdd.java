@@ -80,8 +80,10 @@ public class TempItemAdd extends Fragment{
         		buttonHandler(false);
         	}
         } );
-
-        
+        if (this.getArguments() != null){
+        	_price.setText(this.getArguments().getString("price"));
+        	_name.setText(this.getArguments().getString("name"));
+        }
         return rootView;
     }
     
@@ -133,6 +135,7 @@ public class TempItemAdd extends Fragment{
 	 	    	    _edYear.setSelection(0);
 	 	    	    _price.setText("");
 	 	    		Toast.makeText(getView().getContext(), R.string.item_added, Toast.LENGTH_LONG).show();
+	 	    		getFragmentManager().popBackStackImmediate();
 	 	    	}else if (oneObject.getString("Error").equals("MissingItem")){
 	 	    		Log.i("TempItemAddAfter", "MissingItem");
 
