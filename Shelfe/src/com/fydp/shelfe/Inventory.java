@@ -262,9 +262,6 @@ public class Inventory extends Fragment{
 		case 7:
 			image = drawable.category7;
 			break;
-		case 8:
-			image = drawable.category8;
-			break;
 		}
     	
     	return image;

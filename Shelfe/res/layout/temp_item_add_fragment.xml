@@ -29,7 +29,9 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10" />
+                android:ems="10" 
+                android:hint="Apples..."/>
+            
         <!-- </LinearLayout>-->
 
             <TextView
@@ -106,7 +108,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="45dp"
-                android:ems="10" />
+                android:ems="10"
+                android:hint="1.99" />
 
       <!--  </LinearLayout> -->
 

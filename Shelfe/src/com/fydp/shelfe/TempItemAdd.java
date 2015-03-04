@@ -83,6 +83,7 @@ public class TempItemAdd extends Fragment{
         if (this.getArguments() != null){
         	_price.setText(this.getArguments().getString("price"));
         	_name.setText(this.getArguments().getString("name"));
+        	_category.setSelection(this.getArguments().getInt("category"));
         }
         return rootView;
     }
