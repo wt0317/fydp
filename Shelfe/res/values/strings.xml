@@ -11,14 +11,17 @@
     <string name="action_example">Clear Inventory</string>
     <string name="action_settings">Settings</string>
     <string name="categories">Choose A Category...</string>
-    <string name="baby_food">Baby Food</string>
-    <string name="baking">Baking</string>
+	
+	<string name="grocery">Grocery</string>
+	<string name="dairy">Dairy</string>
+    <string name="produce">Produce</string>
     <string name="beer">Beer</string>
     <string name="beverages">Beverages</string>
-	<string name="dairy">Dairy</string>
-	<string name="fruits">Fruits</string>
-    <string name="bread">Bread</string>
-	<string name="vegetables">Vegetables</string>
+    <string name="baked_goods">Baked Goods</string>
+    <string name="home">Home</string>
+    
+	
+	
 	<string name="dayShort">DD</string>
 	<string name="monthShort">MM</string>
 	<string name="yearShort">YY</string>

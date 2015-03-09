@@ -175,42 +175,64 @@ public class RecieptScanner extends Fragment
     		baseApi.setImage(bitmap);
     		String recognizedText = baseApi.getUTF8Text();
     		baseApi.end();
-    		/*TextView result = (TextView) this.getActivity().findViewById(R.id.textResult);
-    		result.setText(recognizedText);
-    		this.getActivity().setContentView(R.layout.take_photo);*/
-    		
     		
     		itemSearch(recognizedText);
     }
 
     public void itemSearch(String text){
-    
     	if (text.contains("SUBTOTAL")){
     		String items = text.split("SUBTOTAL")[0];
-    		System.out.println("text: " + items );
-	    	Pattern p = Pattern.compile("(.+)([^$]\\d+(\\.|\\‘|\\,)\\d{2})");
-	    	Matcher mr = p.matcher(items);
-	    	while (mr.find()) {
-		        Fragment itemFrag = new TempItemAdd(); 
-		        Bundle bundle = new Bundle();
-		        bundle.putString("price", mr.group(2) );
-		        bundle.putString("name", mr.group(1) );
-		        itemFrag.setArguments(bundle);
-		        // consider using Java coding conventions (upper first char class names!!!)
-		        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		        // Replace whatever is in the fragment_container view with this fragment,
-		        // and add the transaction to the back stack
-		        transaction.replace(R.id.container, itemFrag);
-		        transaction.addToBackStack(null);
 
-		        // Commit the transaction
-		        transaction.commit(); 
-	    	}
-	    	
-    	}
+		    		System.out.println("text: " + items );
+		    		Pattern p = Pattern.compile("(.+)([^$]\\d+(\\.|\\‘|\\,)\\d{2})");
+		    		Matcher mr = p.matcher(items);
+			    	while (mr.find()) {
+			    		String name = mr.group(1);
+			    		String price = mr.group(2);
+			    		Fragment itemFrag = new TempItemAdd(); 
+				        Bundle bundle = new Bundle();
+				        if (price.contains(",")){
+				        	price.replace(",", ".");
+				        }else if (price.contains("‘")){
+				        	price.replace("‘", ".");
+				        }
+				        bundle.putString("price", price );
+				        bundle.putString("name", name);
+				        itemFrag.setArguments(bundle);
+				        // consider using Java coding conventions (upper first char class names!!!)
+				        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+				        // Replace whatever is in the fragment_container view with this fragment,
+				        // and add the transaction to the back stack
+				        transaction.replace(R.id.container, itemFrag);
+				        transaction.addToBackStack(null);
+		
+				        // Commit the transaction
+				        transaction.commit(); 
+			    	}
+		    	
+	    	}	
+    	
     }
     
-    
+	public int getCategory(String category){
+	       
+		if (category.contains("GRO")){
+           	return 1;
+		}else if (category.contains("DAI")){
+			return 2;
+		}else if (category.contains("PRO")){
+			return 3;
+		}else if (category.contains("BEE")){
+			return 4;
+		}else if (category.contains("BEV")){
+			return 5;
+		}else if (category.contains("DEL")){
+			return 6;
+		}else if (category.contains("HOM")){
+			return 7;
+		}	
+		return 1;
+	}
     protected void onRestoreInstanceState( Bundle savedInstanceState) throws IOException{
     	Log.i( "MakeMachine", "onRestoreInstanceState()");
     	if( savedInstanceState.getBoolean( RecieptScanner.PHOTO_TAKEN ) ) {

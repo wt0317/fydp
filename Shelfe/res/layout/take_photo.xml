@@ -28,9 +28,19 @@
         	  android:layout_height="wrap_content"
         	  android:gravity="center_horizontal"/>
 	        		   
-	<Button android:id="@+id/button"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="Take Photo"
-			android:layout_weight="1"/>
+	<Button
+	    android:id="@+id/button"
+	    android:layout_width="270dp"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:layout_marginBottom="20dp"
+	    android:background="@drawable/buttonshape"
+	    android:shadowColor="#A8A8A8"
+	    android:shadowDx="0"
+	    android:shadowDy="0"
+	    android:shadowRadius="5"
+	    android:text="TAKE PHOTO"
+	    android:textColor="#FFFFFF"
+	    android:textSize="30sp" />
+
 </LinearLayout>
