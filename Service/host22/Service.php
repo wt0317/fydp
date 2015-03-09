@@ -224,7 +224,7 @@
 			return $ret;
 		}
 		
-		public function newUser($username, $email, $password, $secret){	
+		public function newUser($username, $email, $password){	
 			$DB_Connect = new DB_Connect();
 			$con = $DB_Connect->connect();
 			
@@ -242,7 +242,18 @@
 				return array("Success" => "false");
 			}
 			
-			mysql_query("INSERT INTO user (username, password, email, status) VALUES ('".$username."', '".$password."', '".$email."', '".$secret."')");
+			$secret = $Keygen->generateRandomSecret();
+			$subject = "Shelf-e Registration";
+			$message = "Your secret code to complete registration is: ".$secret;
+			$headers = 'From: Shelf-e';
+			if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+				mail($email, $subject, $message, $headers);
+				mysql_query("INSERT INTO user (username, password, email, status) VALUES ('".$username."', '".$password."', '".$email."', '".$secret."')");
+			}
+			else{
+				$DB_Connect->close();
+				return array("Success" => "false");
+			}
 			
 			$DB_Connect->close();
 			return array("Success" => "true");
@@ -252,7 +263,7 @@
 			$DB_Connect = new DB_Connect();
 			$con = $DB_Connect->connect();
 			
-			$checkUser = mysql_query("SELECT username FROM user WHERE username='".$email."' AND secret='".$secret."'");
+			$checkUser = mysql_query("SELECT username FROM user WHERE email='".$email."' AND secret='".$secret."'");
 			
 			if(mysql_num_rows($checkUser) == 0){
 				$DB_Connect->close();
@@ -345,6 +356,19 @@
 			
 			$DB_Connect->close();
 			return array("Success" => "true");
+		}
+	}
+	
+	class Keygen {
+		function generateRandomSecret() {
+			$length = 6;
+			$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			$charactersLength = strlen($characters);
+			$randomString = '';
+			for ($i = 0; $i < $length; $i++) {
+				$randomString .= $characters[rand(0, $charactersLength - 1)];
+			}
+			return $randomString;
 		}
 	}
   
