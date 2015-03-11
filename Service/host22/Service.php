@@ -242,6 +242,7 @@
 				return array("Success" => "false");
 			}
 			
+			$Keygen = new Keygen();
 			$secret = $Keygen->generateRandomSecret();
 			$subject = "Shelf-e Registration";
 			$message = "Your secret code to complete registration is: ".$secret;
@@ -263,7 +264,7 @@
 			$DB_Connect = new DB_Connect();
 			$con = $DB_Connect->connect();
 			
-			$checkUser = mysql_query("SELECT username FROM user WHERE email='".$email."' AND secret='".$secret."'");
+			$checkUser = mysql_query("SELECT username FROM user WHERE email='".$email."' AND status='".$secret."'");
 			
 			if(mysql_num_rows($checkUser) == 0){
 				$DB_Connect->close();
@@ -273,6 +274,21 @@
 				$users = mysql_fetch_array($checkUser);
 				$user = $users['username'];
 				mysql_query("UPDATE user SET status=1 WHERE username='".$user."'");
+			}
+			
+			$DB_Connect->close();
+			return array("Success" => "true");
+		}
+		
+		public function checkLogin($username, $password){
+			$DB_Connect = new DB_Connect();
+			$con = $DB_Connect->connect();
+			
+			$auth = $DB_Connect->auth($username, $password);
+			
+			if($auth == 0){
+				$DB_Connect->close();
+				return array("Authentication" => "Failed");
 			}
 			
 			$DB_Connect->close();
