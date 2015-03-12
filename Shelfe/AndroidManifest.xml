@@ -17,7 +17,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.fydp.shelfe.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,13 +28,26 @@
         </activity>
          <activity
             android:name="com.fydp.shelfe.LoggedIn"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"  >
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>       
+        </activity>    
+        <activity
+            android:name="com.fydp.shelfe.Register"
+            android:label="@string/app_name"              
+            android:noHistory="true"
+            android:launchMode="singleTop">
+            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>    
 		<activity
 		      android:name="com.google.zxing.client.android.CaptureActivity"
 		      android:configChanges="orientation|keyboardHidden"

@@ -7,6 +7,7 @@ import java.text.ParseException;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
@@ -31,22 +32,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends ActionBarActivity {
 	
 	private EditText username;
 	private EditText password;
 	private Button login;
+	private Button register;
 	private TextView loginLockedTV;
 	private TextView attemptsLeftTV;
 	private TextView numberOfRemainingLoginAttemptsTV;
 	int numberOfRemainingLoginAttempts = 3;
 
-	/**
-	 * Fragment managing the behaviors, interactions and presentation of the
-	 * navigation drawer.
-	 */
-	private NavigationDrawerFragment mNavigationDrawerFragment;
 
 	/**
 	 * Used to store the last screen title. For use in
@@ -68,14 +64,28 @@ public class MainActivity extends ActionBarActivity implements
 		
 	}
 	
-	public void authenticateLogin(View view) {
-		if (username.getText().toString().equals("admin") && 
-				password.getText().toString().equals("admin")) {
-			Toast.makeText(getApplicationContext(), "Hello admin!", 
-			Toast.LENGTH_SHORT).show();
+	public void authenticateLogin(View view) throws JSONException {
+
+		String result = null;
+	    try {
+	    	String call = "http://shelfe.host22.com/service/Service.php?method=checkLogin" +
+	    			"&username=" + username.getText() +
+	    			"&password=" + password.getText();
+	    	result = new CallServer().execute(call).get();
+
+	    } catch (Exception e) { 
+	        // Oops
+	    }
+		if (result != null){
+			    JSONObject jArray = new JSONObject(result);
+		    	String success = jArray.getString("Success");
+		    	
+		    	if (success.equals("true")){
 			
-			Intent myIntent = new Intent(MainActivity.this, LoggedIn.class);
-			MainActivity.this.startActivity(myIntent);
+					Intent myIntent = new Intent(MainActivity.this, LoggedIn.class);
+					finish();
+					startActivity(myIntent);
+		    	}
 		} else {
 			Toast.makeText(getApplicationContext(), "Seems like you 're not admin!", 
 					Toast.LENGTH_SHORT).show();
@@ -93,19 +103,25 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
+	public void register(View view) {
+
+			Intent myIntent = new Intent(MainActivity.this, Register.class);
+			myIntent.putExtra("username",username.getText());
+			myIntent.putExtra("password",password.getText());
+			startActivity(myIntent);
+
+	}
+	
 	private void setupVariables() {
 		username = (EditText) findViewById(R.id.usernameET);
 		password = (EditText) findViewById(R.id.passwordET);
 		login = (Button) findViewById(R.id.loginBtn);
+		register = (Button) findViewById(R.id.registerBtn);
 		loginLockedTV = (TextView) findViewById(R.id.loginLockedTV);
 		attemptsLeftTV = (TextView) findViewById(R.id.attemptsLeftTV);
 		numberOfRemainingLoginAttemptsTV = (TextView) findViewById(R.id.numberOfRemainingLoginAttemptsTV);
 		numberOfRemainingLoginAttemptsTV.setText(Integer.toString(numberOfRemainingLoginAttempts));
 	}
 
-	@Override
-	public void onNavigationDrawerItemSelected(int position) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

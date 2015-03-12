@@ -103,17 +103,19 @@ public class TempItemAdd extends Fragment{
  	      SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
  	      Date date = df.parse(str);
  	      long epoch = date.getTime()/1000L;
- 	      
+	    Intent myIntent = getActivity().getIntent();
+	    String username = myIntent.getStringExtra("username");
+	    String password = myIntent.getStringExtra("password");
  	    	String call = 
  	    			
- 	    			"http://shelfe.netau.net/service/Service.php?method=addItem&username=test&password=test" +
+ 	    			"http://shelfe.host22.com/service/Service.php?method=addItem" + 
+ 	    			"&username=" + username + 
+ 	    			"&password=" + password +
  	    			"&Barcode=1234567888" + 
  	    			"&CategoryId=" + catId.getCategory(_category.getSelectedItem().toString()) + 
  	    			"&ExpiryDate=" + epoch + 
  	    			"&Name=" + _name.getText() + 
- 	    			"&Price=" + _price.getText() + 
- 	    			//"&Override=" + Boolean.toString(override);
- 	    			"&Override=true";
+ 	    			"&Price=" + _price.getText();
  	    		call = call.replace(" ","_");
 	 	    	result = new CallServer().execute(call).get();
 //		        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);

@@ -4,25 +4,27 @@ import com.fydp.shelfe.R.drawable;
 
 public class CategoryId {
 
-	public static int BABY_FOOD = 1;
-	public static int BAKING  = 2;
-	public static int BEER = 3;
-	public static int BEVERAGES = 4;
-	public static int DAIRY = 5;
-	public static int FRUITS = 6;
-	public static int BREAD = 7;
-	public static int VEGETABLES = 8;
+	public static int GROCERY = 1;
+	public static int DAIRY  = 2;
+	public static int PRODUCE = 3;
+	public static int BEER = 4;
+	public static int BEVERAGES = 5;
+	public static int BAKED_GOODS= 6;
+	public static int HOME = 7;
 	
 
 	public int getCategory(String category){
 		
-	   	int catId = CategoryId.BABY_FOOD;
+	   	int catId = CategoryId.GROCERY;
 			switch (category) {
-			case "Baby Food":  
-				catId = CategoryId.BABY_FOOD;
+			case "Grocery":  
+				catId = CategoryId.GROCERY;
 				break;
-			case "Baking":
-				catId = CategoryId.BAKING;
+			case "Dairy":
+				catId = CategoryId.DAIRY;
+				break;
+			case "Produce":
+				catId = CategoryId.PRODUCE;
 				break;
 			case "Beer":
 				catId = CategoryId.BEER;
@@ -30,17 +32,11 @@ public class CategoryId {
 			case "Beverages":
 				catId = CategoryId.BEVERAGES;
 				break;
-			case "Dairy":
-				catId = CategoryId.DAIRY;
+			case "Baked Goods":
+				catId = CategoryId.BAKED_GOODS;
 				break;
-			case "Fruits":
-				catId = CategoryId.FRUITS;
-				break;
-			case "Bread":
-				catId = CategoryId.BREAD;
-				break;
-			case "Vegetables":
-				catId = CategoryId.VEGETABLES;
+			case "Home":
+				catId = CategoryId.HOME;
 				break;
 			}
 	    	

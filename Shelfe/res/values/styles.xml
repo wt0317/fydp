@@ -14,7 +14,11 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-    </style>
+	        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+	</style>
+	<style name="myTheme.ActionBar" parent="AppBaseTheme">
+	    <item name="android:background">@color/clicked</item>
+
+	</style>
 
 </resources>

@@ -105,6 +105,7 @@ public class NavigationDrawerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
 		mDrawerListView = (ListView) inflater.inflate(
 				R.layout.fragment_navigation_drawer, container, false);
 		mDrawerListView
@@ -285,7 +286,7 @@ public class NavigationDrawerFragment extends Fragment {
 		if (item.getItemId() == R.id.action_example) {
 			InputStream inputStream = null;
 			try {
-		    	String call = "http://shelfe.netau.net/service/Service.php?method=clearInventory&username=test&password=test";
+		    	String call = "http://shelfe.host22.com/service/Service.php?method=clearInventory&username=test&password=test";
 		    	new CallServer().execute(call);
 
 		    } catch (Exception e) { 

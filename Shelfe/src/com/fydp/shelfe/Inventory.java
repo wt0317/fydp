@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import com.fydp.shelfe.R.drawable;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -148,8 +149,13 @@ public class Inventory extends Fragment{
 
         InputStream inputStream = null;
 	    String result = null;
+	    Intent myIntent = getActivity().getIntent();
+	    String username = myIntent.getStringExtra("username");
+	    String password = myIntent.getStringExtra("password");
 	    try {
-	    	String call = "http://shelfe.netau.net/service/Service.php?method=getInventory&username=test&password=test";
+	    	String call = "http://shelfe.host22.com/service/Service.php?method=getInventory" +
+	    			"&username=" + username +
+	    			"&password=" + password;
 	    	result = new CallServer().execute(call).get();
 
 	    } catch (Exception e) { 
@@ -180,6 +186,7 @@ public class Inventory extends Fragment{
 				            grocery.setInitialAmount(oneObject.getString("InitialAmount"));
 				            grocery.setBarcode(oneObject.getString("Barcode"));
 				            grocery.setCategory(oneObject.getString("CategoryId"));
+				            grocery.setDateAdded(oneObject.getString("DateAdded"));
 				            
 				                
 				            // Formats the date in the CET timezone   
