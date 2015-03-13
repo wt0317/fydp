@@ -42,7 +42,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ItemView extends Fragment{
+public class ShoppingList extends Fragment{
 
 	private static final String TAG = "com.sim.ItemView";
 	
@@ -50,7 +50,7 @@ public class ItemView extends Fragment{
 	private String lastName = "";
 	private String username = null;
 	private String password = null;
-	public ItemView() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
+	public ShoppingList() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
 	   	 Log.i(TAG, "[ACTIVITY] Inventory");
 	   	 
 	   	 //select achievements from db and fill allAchievements
@@ -80,7 +80,7 @@ public class ItemView extends Fragment{
 			e.printStackTrace();
 		}
     	container.removeAllViews();
-        View rootView = inflater.inflate(R.layout.item_view, container, false);
+        View rootView = inflater.inflate(R.layout.shopping_list, container, false);
   
     	//container.removeAllViews();
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
@@ -164,7 +164,7 @@ public class ItemView extends Fragment{
 		
 	}
     private void prepareItem(Grocery grocery){
-		Intent myIntent = new Intent(getActivity(), ItemView.class);
+		Intent myIntent = new Intent(getActivity(), ShoppingList.class);
 		myIntent.putExtra("name", grocery.getName());
 		myIntent.putExtra("barcode",grocery.getBarcode());	
 		myIntent.putExtra("category",grocery.getCategory());
