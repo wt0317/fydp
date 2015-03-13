@@ -42,4 +42,34 @@ public class CategoryId {
 	    	
 	    	return catId;
 	}
+	
+    public static int getImageRes(int Category){
+    	   
+    	int image = drawable.category1;
+		switch (Category) {
+		case 1:  
+			image = drawable.category1;
+			break;
+		case 2:
+			image = drawable.category2;
+			break;
+		case 3:
+			image = drawable.category3;
+			break;
+		case 4:
+			image = drawable.category4;
+			break;
+		case 5:
+			image = drawable.category5;
+			break;
+		case 6:
+			image = drawable.category6;
+			break;
+		case 7:
+			image = drawable.category7;
+			break;
+		}
+    	
+    	return image;
+    }
 }

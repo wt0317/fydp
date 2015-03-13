@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#3389e5"
     android:choiceMode="singleChoice"
-    android:divider="@android:color/transparent"
-    android:dividerHeight="0dp"
+    android:divider="@color/White"
+    android:dividerHeight="2dp"
     tools:context="com.fydp.shelfe.NavigationDrawerFragment" />
 

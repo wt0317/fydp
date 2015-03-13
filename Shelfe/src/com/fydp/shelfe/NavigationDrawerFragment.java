@@ -69,6 +69,9 @@ public class NavigationDrawerFragment extends Fragment {
 	private int mCurrentSelectedPosition = 0;
 	private boolean mFromSavedInstanceState;
 	private boolean mUserLearnedDrawer;
+	
+	private String username = null;
+	private String password = null;
 
 	public NavigationDrawerFragment() {
 	}
@@ -105,7 +108,10 @@ public class NavigationDrawerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+	    Bundle myIntent = getActivity().getIntent().getExtras();
+	    username = myIntent.getString("username");
+	    password = myIntent.getString("password");
+	    
 		mDrawerListView = (ListView) inflater.inflate(
 				R.layout.fragment_navigation_drawer, container, false);
 		mDrawerListView
@@ -286,7 +292,9 @@ public class NavigationDrawerFragment extends Fragment {
 		if (item.getItemId() == R.id.action_example) {
 			InputStream inputStream = null;
 			try {
-		    	String call = "http://shelfe.host22.com/service/Service.php?method=clearInventory&username=test&password=test";
+		    	String call = "http://shelfe.host22.com/service/Service.php?method=clearInventory" +
+		    			"&username=" + username +
+		    			"&password=" + password;
 		    	new CallServer().execute(call);
 
 		    } catch (Exception e) { 

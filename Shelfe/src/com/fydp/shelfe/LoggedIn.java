@@ -188,7 +188,7 @@ public class LoggedIn extends ActionBarActivity implements
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-	            	}	
+	            	}
                	getFragmentManager().beginTransaction()
            		.add(R.id.container, inFragment)
            		.commit();

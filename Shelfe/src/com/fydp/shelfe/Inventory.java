@@ -48,6 +48,8 @@ public class Inventory extends Fragment{
 	
 	public ArrayList<Grocery> groceries;
 	private String lastName = "";
+	private String username = null;
+	private String password = null;
 	public Inventory() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
 	   	 Log.i(TAG, "[ACTIVITY] Inventory");
 	   	 
@@ -62,6 +64,9 @@ public class Inventory extends Fragment{
             Bundle savedInstanceState) {
     	Log.i(TAG, "onCreateView");
     	setHasOptionsMenu(true);
+	    Bundle myIntent = getActivity().getIntent().getExtras();
+	    username = myIntent.getString("username");
+	    password = myIntent.getString("password");
     	groceries = new ArrayList<Grocery>();
 	   	try {
 			getJSON();
@@ -92,10 +97,10 @@ public class Inventory extends Fragment{
   	     
         
           
-  	     for (Grocery grocery : groceries){
+  	     for (final Grocery grocery : groceries){
 
   		     ImageView image = new ImageView(this.getActivity());
-  		     image.setImageResource(getImageRes(Integer.parseInt(grocery.getCategory())));   
+  		     image.setImageResource(CategoryId.getImageRes(Integer.parseInt(grocery.getCategory())));   
 
   	         TextView name = new TextView(this.getActivity());
   	         name.setTextSize(22);
@@ -112,10 +117,14 @@ public class Inventory extends Fragment{
   	         name.setText(grocery.getName());
   	         amount.setText(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
 	            
-  	         Date date = new Date(Long.parseLong(grocery.getExpiryDate())*1000L);
+  	         Date dateEx = new Date(Long.parseLong(grocery.getExpiryDate())*1000L);
+  	         Date dateAd = new Date(Long.parseLong(grocery.getDateAdded())*1000L);
 	         DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 	         format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-	         String formatted = format.format(date);
+	         String formatted = format.format(dateEx);
+	         String formattedAdded = format.format(dateAd);
+	         grocery.setExpiryDate(formatted);
+	         grocery.setDateAdded(formattedAdded);
   	         expiration.setText("Expiration: " + formatted);
   	         // Let's get the root layout and add our ImageView
   	         LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.main);
@@ -134,7 +143,12 @@ public class Inventory extends Fragment{
   	         desc.addView(title, 1,textParams);
   	
   	   
-  	
+  	         desc.setOnClickListener( new View.OnClickListener(){
+	        	public void onClick( View view ){
+	        		prepareItem(grocery);
+
+	        	}
+  	         } );
   	         layout.addView(desc, layoutParams);  
   	         
           }       
@@ -143,15 +157,22 @@ public class Inventory extends Fragment{
         return rootView;
 		
 	}
-    
+    private void prepareItem(Grocery grocery){
+		Intent myIntent = new Intent(getActivity(), ItemView.class);
+		myIntent.putExtra("name", grocery.getName());
+		myIntent.putExtra("barcode",grocery.getBarcode());	
+		myIntent.putExtra("category",grocery.getCategory());
+		myIntent.putExtra("expiryDate",grocery.getExpiryDate());
+		myIntent.putExtra("dateAdded", grocery.getDateAdded());
+		myIntent.putExtra("price",grocery.getPrice());
+		startActivity(myIntent);
+    }
     private void getJSON() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
 
 
         InputStream inputStream = null;
 	    String result = null;
-	    Intent myIntent = getActivity().getIntent();
-	    String username = myIntent.getStringExtra("username");
-	    String password = myIntent.getStringExtra("password");
+	    lastName = "";
 	    try {
 	    	String call = "http://shelfe.host22.com/service/Service.php?method=getInventory" +
 	    			"&username=" + username +
@@ -193,11 +214,7 @@ public class Inventory extends Fragment{
 				           //String myDate = df2.format(oneObject.getString("ExpiryDate"));
 				            
 				            grocery.setExpiryDate(oneObject.getString("ExpiryDate"));
-				            if (Integer.parseInt(oneObject.getString("Status")) == 0){
-				            	grocery.setName(oneObject.getString("Name").replace("_", " ") + " (Checked Out)");
-				            }else{	
-				            	grocery.setName(oneObject.getString("Name").replace("_", " "));
-				            }
+				            grocery.setName(oneObject.getString("Name").replace("_", " "));
 				            grocery.setPrice(oneObject.getString("Price"));
 				            groceries.add(grocery);
 				            lastName = oneObject.getString("Name");
@@ -244,35 +261,7 @@ public class Inventory extends Fragment{
     	return Color.parseColor(color);
     }
     
-    private int getImageRes(int Category){
-   
-    	int image = drawable.category1;
-		switch (Category) {
-		case 1:  
-			image = drawable.category1;
-			break;
-		case 2:
-			image = drawable.category2;
-			break;
-		case 3:
-			image = drawable.category3;
-			break;
-		case 4:
-			image = drawable.category4;
-			break;
-		case 5:
-			image = drawable.category5;
-			break;
-		case 6:
-			image = drawable.category6;
-			break;
-		case 7:
-			image = drawable.category7;
-			break;
-		}
-    	
-    	return image;
-    }
+
     
     public void onDestroy() {
         Log.i(TAG, "[ACTIVITY] onDestroy");

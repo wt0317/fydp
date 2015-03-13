@@ -4,128 +4,129 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.18"
-        android:orientation="vertical" >
+  <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_weight="0.18"
+       android:orientation="vertical" >
 
-        <!-- <LinearLayout
+       <!--
+             <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" 
-            android:orientation="horizontal"> -->
+            android:orientation="horizontal">
+       -->
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name: "
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="30sp"
-                android:textStyle="italic"
-                android:typeface="sans" />
+       <TextView
+           android:id="@+id/textView1"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_weight="0.18"
+           android:gravity="center"
+           android:text="Add Grocery Item"
+           android:textColor="#33B5E5"
+           android:textSize="35sp" />
 
-            <EditText
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10" 
-                android:hint="Apples..."/>
-            
-        <!-- </LinearLayout>-->
+       <EditText
+           android:id="@+id/name"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_weight="0.1"
+           android:ems="10"
+           android:hint="Name" />
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Category: "
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="30sp"
-                android:textStyle="italic" />
+       <!-- </LinearLayout> -->
 
-            <Spinner
-                android:id="@+id/category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/Categories"
-                android:prompt="@string/categories" />
-      <!--  </LinearLayout>
+       <Spinner
+           android:id="@+id/category"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.1"
+           android:entries="@array/Categories"
+           android:hint="Category"
+           android:prompt="@string/categories" />
+
+       <!--
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" > -->
+            android:orientation="horizontal" >
+       -->
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Expiry Date: "
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="30sp"
-                android:textStyle="italic" />
+       <EditText
+           android:id="@+id/changeDate"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.1"
+           android:editable="false"
+           android:ems="10"
+           android:hint="Expiry Date" />
+       
+       <!--      <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" >
 
-         <LinearLayout
+           <Spinner
+               android:id="@+id/day"
+               android:layout_width="58dp"
+               android:layout_height="46dp"
+               android:entries="@array/day"
+               android:prompt="@string/dayShort" />
+
+           <Spinner
+               android:id="@+id/month"
+               android:layout_width="58dp"
+               android:layout_height="46dp"
+               android:entries="@array/month"
+               android:prompt="@string/monthShort" />
+
+           <Spinner
+               android:id="@+id/year"
+               android:layout_width="match_parent"
+               android:layout_height="46dp"
+               android:entries="@array/year"
+               android:prompt="@string/yearShort" />
+       </LinearLayout>
+
+ 
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-            <Spinner
-                android:id="@+id/day"
-                android:layout_width="58dp"
-                android:layout_height="46dp"
-                android:entries="@array/day"
-                android:prompt="@string/dayShort" />
+       -->
 
-            <Spinner
-                android:id="@+id/month"
-                android:layout_width="58dp"
-                android:layout_height="46dp"
-                android:entries="@array/month"
-                android:prompt="@string/monthShort" />
+       <EditText
+           android:id="@+id/price"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginBottom="45dp"
+           android:layout_weight="0.1"
+           android:ems="10"
+           android:maxLines="1"
+           android:hint="Price" />
 
-            <Spinner
-                android:id="@+id/year"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:entries="@array/year"
-                android:prompt="@string/yearShort" />
-      	</LinearLayout>
+       <!-- </LinearLayout> -->
 
-       <!-- <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" > -->
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Price: "
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="30sp"
-                android:textStyle="italic" />
+        
+       <Button
+           android:id="@+id/add"
+           android:layout_width="270dp"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_marginBottom="50dp"
+           android:background="@drawable/buttonshape"
+           android:shadowColor="#A8A8A8"
+           android:shadowDx="0"
+           android:shadowDy="0"
+           android:shadowRadius="5"
+           android:text="ADD"
+           android:textColor="#FFFFFF"
+           android:textSize="30sp" />
 
-            <EditText
-                android:id="@+id/price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="45dp"
-                android:ems="10"
-                android:hint="1.99" />
-
-      <!--  </LinearLayout> -->
-
-        <Button
-            android:id="@+id/add"
-            android:layout_width="270dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/buttonshape"
-            android:shadowColor="#A8A8A8"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="5"
-            android:text="ADD"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp" />
-    </LinearLayout>
+   </LinearLayout>
 
 </LinearLayout>
