@@ -9,9 +9,9 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.googlecode.tesseract.android.TessBaseAPI;
-
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,6 +20,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -52,7 +53,8 @@ public class RecieptScanner extends Fragment
 		
 	}
 	
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) 
     {
@@ -60,7 +62,9 @@ public class RecieptScanner extends Fragment
         //super.onCreate(savedInstanceState);
     	container.removeAllViews();
         View rootView = inflater.inflate(R.layout.take_photo, container, false);
-       
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.DarkOrchid));
+		
         _image = ( ImageView ) rootView.findViewById( R.id.image );
         _field = ( TextView ) rootView.findViewById( R.id.field );
         _button = ( Button ) rootView.findViewById( R.id.button );

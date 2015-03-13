@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -60,6 +61,8 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.login);
+		ActionBar actionBar = this.getSupportActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
 		setupVariables();		
 		
 	}

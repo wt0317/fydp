@@ -6,6 +6,7 @@
     <string name="title_section2">Receipt Scanner</string>
     <string name="title_section3">UPC Scanner</string>
     <string name="title_section4">Add Item</string>
+    <string name="title_section5">Shopping List</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Clear Inventory</string>

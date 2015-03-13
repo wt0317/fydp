@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -24,12 +23,13 @@ import org.apache.http.params.BasicHttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.fydp.shelfe.R.drawable;
-
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -59,11 +59,15 @@ public class Inventory extends Fragment{
 		
 	}
 	
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	Log.i(TAG, "onCreateView");
     	setHasOptionsMenu(true);
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
+		
 	    Bundle myIntent = getActivity().getIntent().getExtras();
 	    username = myIntent.getString("username");
 	    password = myIntent.getString("password");

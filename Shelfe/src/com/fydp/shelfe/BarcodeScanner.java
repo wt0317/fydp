@@ -4,20 +4,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.fydp.shelfe.RecieptScanner.ButtonClickHandler;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,12 +39,16 @@ public class BarcodeScanner extends Fragment {
 		
 	}    
     
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     	container.removeAllViews();
         View rootView = inflater.inflate(R.layout.take_photo, container, false);
          
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.FireBrick));
+		
         scan= (Button) rootView.findViewById(R.id.button);
          
         scan.setOnClickListener(new ButtonClickHandler());

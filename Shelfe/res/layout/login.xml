@@ -78,7 +78,7 @@
         android:layout_alignLeft="@+id/loginBtn"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/loginBtn"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="165dp"
         android:background="@drawable/textboxshape"
         android:ems="10"
         android:hint="Password"
@@ -92,11 +92,25 @@
         android:layout_alignLeft="@+id/passwordET"
         android:layout_alignRight="@+id/loginBtn"
         android:layout_marginBottom="42dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/textboxshape"
         android:ems="10"
         android:hint="Username" >
 
         <requestFocus />
     </EditText>
+
+    <TextView
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/usernameET"
+        android:layout_marginTop="21dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:text="Shelf-e"
+        android:textColor="#33B5E5"
+        android:textSize="60sp" />
 
 </RelativeLayout>

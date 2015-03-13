@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -57,6 +58,8 @@ public class LoggedIn extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		ActionBar actionBar = this.getSupportActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
 		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
@@ -89,6 +92,9 @@ public class LoggedIn extends ActionBarActivity implements
 			mTitle = getString(R.string.title_section3);
 		case 4:
 			mTitle = getString(R.string.title_section4);
+			break;
+		case 5:
+			mTitle = getString(R.string.title_section5);
 			break;
 		}
 	}

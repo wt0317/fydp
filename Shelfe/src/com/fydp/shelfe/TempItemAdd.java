@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,10 +69,14 @@ public class TempItemAdd extends Fragment{
 		
 	}
 	
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) 
     {
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
+		
 	    Bundle myIntent = getActivity().getIntent().getExtras();
 	    username = myIntent.getString("username");
 	    password = myIntent.getString("password");
