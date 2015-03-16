@@ -169,6 +169,8 @@ public class Inventory extends Fragment{
 		myIntent.putExtra("expiryDate",grocery.getExpiryDate());
 		myIntent.putExtra("dateAdded", grocery.getDateAdded());
 		myIntent.putExtra("price",grocery.getPrice());
+		myIntent.putExtra("username", username);
+		myIntent.putExtra("password", password);
 		startActivity(myIntent);
     }
     private void getJSON() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{

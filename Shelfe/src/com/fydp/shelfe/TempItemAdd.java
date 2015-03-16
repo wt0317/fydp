@@ -57,6 +57,7 @@ public class TempItemAdd extends Fragment{
 	protected Spinner _category;
 	protected EditText _price;
 	protected EditText _date;
+	protected Button _skip;
 	
 	private String username = null;
 	private String password = null;
@@ -90,6 +91,7 @@ public class TempItemAdd extends Fragment{
         _price = ( EditText ) rootView.findViewById( R.id.price );
         _button = ( Button ) rootView.findViewById( R.id.add );
         _date = (EditText) rootView.findViewById(R.id.changeDate);
+        _skip = (Button) rootView.findViewById(R.id.skip);
 		
         _button.setOnClickListener( new View.OnClickListener(){
         	public void onClick( View view ){
@@ -97,22 +99,47 @@ public class TempItemAdd extends Fragment{
         		buttonHandler(false);
         	}
         } );
+        
+        _skip.setOnClickListener( new View.OnClickListener(){
+        	public void onClick( View view ){
+        		getFragmentManager().popBackStack();
+        	}
+        } );
         if (this.getArguments() != null){
         	_price.setText(this.getArguments().getString("price"));
+        	if (_price.getText() != null){
+        		_skip.setVisibility(View.VISIBLE);
+        	}
         	_name.setText(this.getArguments().getString("name"));
         	_category.setSelection(this.getArguments().getInt("category"));
         }
         changeDate = (EditText) rootView.findViewById(R.id.changeDate);
         
-        changeDate.setOnClickListener(new View.OnClickListener() {
+//        changeDate.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+//
+//                DialogFragment newFragment = (DialogFragment) new DatePickerFragment();
+//                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+//
+//            }
+//
+//        });
+        changeDate.setOnTouchListener( new View.OnTouchListener()
+        {
 
-            public void onClick(View v) {
-
-                DialogFragment newFragment = (DialogFragment) new DatePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                switch(event.getAction())
+                {
+            case MotionEvent.ACTION_DOWN:
+            	DialogFragment newFragment = (DialogFragment) new DatePickerFragment();
+            	newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+                break;
+                }
+                return true;        
             }
-
         });
         
         return rootView;

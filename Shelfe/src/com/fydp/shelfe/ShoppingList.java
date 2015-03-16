@@ -65,6 +65,7 @@ public class ShoppingList extends Fragment{
             Bundle savedInstanceState) {
     	Log.i(TAG, "onCreateView");
     	setHasOptionsMenu(true);
+    	container.removeAllViews();
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
 		

@@ -9,7 +9,9 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import com.googlecode.tesseract.android.TessBaseAPI;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -37,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RecieptScanner extends Fragment 
 {
@@ -214,7 +217,9 @@ public class RecieptScanner extends Fragment
 				        transaction.commit(); 
 			    	}
 		    	
-	    	}	
+	    	}else{
+	    		Toast.makeText(getView().getContext(), "Reciept not detected", Toast.LENGTH_LONG).show();
+	    	}
     	
     }
     
