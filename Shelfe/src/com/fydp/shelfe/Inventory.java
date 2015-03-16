@@ -169,6 +169,7 @@ public class Inventory extends Fragment{
 		myIntent.putExtra("expiryDate",grocery.getExpiryDate());
 		myIntent.putExtra("dateAdded", grocery.getDateAdded());
 		myIntent.putExtra("price",grocery.getPrice());
+		myIntent.putExtra("status",grocery.getStatus());
 		myIntent.putExtra("username", username);
 		myIntent.putExtra("password", password);
 		startActivity(myIntent);
@@ -214,6 +215,7 @@ public class Inventory extends Fragment{
 				            grocery.setBarcode(oneObject.getString("Barcode"));
 				            grocery.setCategory(oneObject.getString("CategoryId"));
 				            grocery.setDateAdded(oneObject.getString("DateAdded"));
+				            grocery.setStatus(oneObject.getString("Status"));
 				            
 				                
 				            // Formats the date in the CET timezone   

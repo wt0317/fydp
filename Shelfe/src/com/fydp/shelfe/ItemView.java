@@ -43,6 +43,7 @@ public class ItemView extends ActionBarActivity {
 	private TextView attemptsLeftTV;
 	private TextView numberOfRemainingLoginAttemptsTV;
 	private Button skip;
+	private String status;
 	int numberOfRemainingLoginAttempts = 3;
 
 
@@ -69,6 +70,7 @@ public class ItemView extends ActionBarActivity {
 	    String expiryDate = myIntent.getString("expiryDate");	
 	    String category = myIntent.getString("category");	
 	    String dateAdded = myIntent.getString("dateAdded");
+	    status = myIntent.getString("status");
 	    username = myIntent.getString("username");
 	    password = myIntent.getString("password");
 		
@@ -108,7 +110,7 @@ public class ItemView extends ActionBarActivity {
 	    	String call = "http://shelfe.host22.com/service/Service.php?method=removeItem" +
 	    			"&username=" + username +
 	    			"&password=" + password + 
-	    			"&status=0";
+	    			"&status=" + status;
 	    	result = new CallServer().execute(call).get();
 
 	    } catch (Exception e) { 
