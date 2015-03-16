@@ -107,7 +107,7 @@ public class TempItemAdd extends Fragment{
         } );
         if (this.getArguments() != null){
         	_price.setText(this.getArguments().getString("price"));
-        	if (_price.getText() != null){
+        	if (!(_price.getText()).toString().equals("")){
         		_skip.setVisibility(View.VISIBLE);
         	}
         	_name.setText(this.getArguments().getString("name"));
