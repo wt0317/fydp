@@ -19,6 +19,7 @@
         <item>@string/beverages</item>
         <item>@string/baked_goods</item>
         <item>@string/home</item>
+        <item>@string/meat</item>
     </string-array>
     <string-array name="month">
         <item>1</item>

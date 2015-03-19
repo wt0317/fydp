@@ -11,7 +11,7 @@ public class CategoryId {
 	public static int BEVERAGES = 5;
 	public static int BAKED_GOODS= 6;
 	public static int HOME = 7;
-	
+	public static int MEAT = 8;
 
 	public int getCategory(String category){
 		
@@ -37,6 +37,9 @@ public class CategoryId {
 				break;
 			case "Home":
 				catId = CategoryId.HOME;
+				break;
+			case "Meat":
+				catId = CategoryId.MEAT;
 				break;
 			}
 	    	
@@ -67,6 +70,9 @@ public class CategoryId {
 			break;
 		case 7:
 			image = drawable.category7;
+			break;
+		case 8:
+			image = drawable.category8;
 			break;
 		}
     	
