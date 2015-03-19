@@ -116,6 +116,12 @@
 				
 				$checkItems = mysql_query("SELECT DISTINCT Name FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND ".$ShelfRegionCOr);
 				
+				if(mysql_num_rows($checkItems) == 0)
+				{
+					$DB_Connect->close();
+					return array("Error" => "No items exist in provided regions.");
+				}
+				
 				$items = mysql_fetch_array($checkItems);
 				
 				$itemCount = 0;
