@@ -11,6 +11,13 @@ public class Grocery {
 	private String barcode;
 	private String price;
 	private String status;
+	private Boolean critical;
+	public Boolean getCritical() {
+		return critical;
+	}
+	public void setCritical(Boolean critical) {
+		this.critical = critical;
+	}
 	public String getStatus() {
 		return status;
 	}

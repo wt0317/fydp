@@ -6,11 +6,21 @@
     <string name="title_section2">Receipt Scanner</string>
     <string name="title_section3">UPC Scanner</string>
     <string name="title_section4">Add Item</string>
+    <string name="title_section5">Shopping List</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Clear Inventory</string>
     <string name="action_settings">Settings</string>
+    <string name="hard_reset">Hard Reset</string>
     <string name="categories">Choose A Category...</string>
+    
+    <string name="activity_settings">Settings</string>
+    <string name="notification_threshold">Notification Threshold</string>
+    <string name="notification_threshold_desc">Change the Notification and Shopping List Threshold</string>
+    <string name="shopping_list_threshold">Shopping List Threshold</string>
+    <string name="admin_mode">Admin Mode</string>
+    <string name="admin_mode_desc">Toggle admin mode</string>
+    <string name="settings_title">Application Settings</string>
 	
 	<string name="grocery">Grocery</string>
 	<string name="dairy">Dairy</string>

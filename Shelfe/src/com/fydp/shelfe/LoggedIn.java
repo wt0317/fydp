@@ -2,10 +2,12 @@ package com.fydp.shelfe;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
 import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.Activity;
@@ -14,14 +16,21 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,7 +46,9 @@ public class LoggedIn extends ActionBarActivity implements
 	 * navigation drawer.
 	 */
 	private NavigationDrawerFragment mNavigationDrawerFragment;
-
+	public static final int MENU_SETTINGS = 8;
+	private SharedPreferences mSettings;
+	private Preferences mPreferences;
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -54,6 +65,9 @@ public class LoggedIn extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		ActionBar actionBar = this.getSupportActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
+		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
@@ -86,6 +100,9 @@ public class LoggedIn extends ActionBarActivity implements
 		case 4:
 			mTitle = getString(R.string.title_section4);
 			break;
+		case 5:
+			mTitle = getString(R.string.title_section5);
+			break;
 		}
 	}
 
@@ -102,8 +119,17 @@ public class LoggedIn extends ActionBarActivity implements
 			// Only show items in the action bar relevant to this screen
 			// if the drawer is not showing. Otherwise, let the drawer
 			// decide what to show in the action bar.
+			menu.add(0, MENU_SETTINGS, 0, R.string.action_settings)
+	        .setShortcut('8', 's')
+	        .setIntent(new Intent(this, Settings.class));
+			if (mPreferences.getAdminMode()){
+				menu.add(0, 6, 0, R.string.hard_reset)
+				.setShortcut('6', 'h');
+			}
 			getMenuInflater().inflate(R.menu.main, menu);
 			restoreActionBar();
+			
+			
 			return true;
 		}
 		return super.onCreateOptionsMenu(menu);
@@ -117,6 +143,22 @@ public class LoggedIn extends ActionBarActivity implements
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
+		}
+		if (id == 6){
+	        InputStream inputStream = null;
+		    try {
+		    	String call = "http://shelfe.host22.com/service/Service.php?method=adminClear" +
+		    			"&username=admin" +
+		    			"&password=admin";
+		    	new CallServer().execute(call).get();
+
+		    } catch (Exception e) { 
+		        // Oops
+		    }
+		    finally {
+		        try{if(inputStream != null)inputStream.close();}catch(Exception squish){}
+		    }
+		    return false;
 		}
 		if (id == R.id.action_refresh) {
 			try {
@@ -184,7 +226,7 @@ public class LoggedIn extends ActionBarActivity implements
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-	            	}	
+	            	}
                	getFragmentManager().beginTransaction()
            		.add(R.id.container, inFragment)
            		.commit();
@@ -234,4 +276,11 @@ public class LoggedIn extends ActionBarActivity implements
 		}
 	}
 
+	@Override
+	public void onResume(){
+		super.onResume();
+        
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        mPreferences = new Preferences(mSettings);
+	}
 }

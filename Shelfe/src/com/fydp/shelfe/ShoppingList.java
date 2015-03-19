@@ -46,11 +46,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class Inventory extends Fragment{
+public class ShoppingList extends Fragment{
 
-	private static final String TAG = "com.sim.Inventory";
+	private static final String TAG = "com.sim.ItemView";
 	
 	public ArrayList<Grocery> groceries;
 	private String lastName = "";
@@ -58,7 +57,7 @@ public class Inventory extends Fragment{
 	private String password = null;
 	private SharedPreferences mSettings;
 	private Preferences mPreferences;
-	public Inventory() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
+	public ShoppingList() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
 	   	 Log.i(TAG, "[ACTIVITY] Inventory");
 	   	 
 	   	 //select achievements from db and fill allAchievements
@@ -76,7 +75,8 @@ public class Inventory extends Fragment{
     	
     	mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mPreferences = new Preferences(mSettings);
-    	
+        
+    	container.removeAllViews();
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
 		
@@ -92,7 +92,7 @@ public class Inventory extends Fragment{
 			e.printStackTrace();
 		}
     	container.removeAllViews();
-        View rootView = inflater.inflate(R.layout.inventory_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.shopping_list, container, false);
   
     	//container.removeAllViews();
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
@@ -111,7 +111,7 @@ public class Inventory extends Fragment{
           layoutParams.setMargins(0, 5, 0, 10);
           
   	     
-        StringBuffer lowToast = new StringBuffer();
+        
           
   	     for (final Grocery grocery : groceries){
 
@@ -127,76 +127,62 @@ public class Inventory extends Fragment{
   	         amount.setTextColor(amountColor(grocery.getCurrentAmount(), grocery.getInitialAmount()));
   	         TextView expiration = new TextView(this.getActivity());
   	         expiration.setGravity(Gravity.CENTER);
-  	      	 expiration.setTextColor(expiryColor(String.valueOf(System.currentTimeMillis()/1000), grocery.getExpiryDate()));
+  	      	expiration.setTextColor(expiryColor(String.valueOf(System.currentTimeMillis()/1000), grocery.getExpiryDate()));
   	         
   	         
   	         name.setText(grocery.getName());
-  	         if (!mPreferences.getAdminMode()){
-  	        	amount.setText(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
-  	         } else {
-  	        	amount.setText(grocery.getCurrentAmount() + "/" + grocery.getInitialAmount());
-  	         }
-  	                     
+  	         double percent = Double.parseDouble(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))));
+  	         amount.setText(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
+	         if (percent < mPreferences.getThreshold()){ 
+	  	         Date dateEx = new Date(Long.parseLong(grocery.getExpiryDate())*1000L);
+	  	         Date dateAd = new Date(Long.parseLong(grocery.getDateAdded())*1000L);
+		         DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		         format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+		         String formatted = format.format(dateEx);
+		         String formattedAdded = format.format(dateAd);
+		         grocery.setExpiryDate(formatted);
+		         grocery.setDateAdded(formattedAdded);
+	  	         expiration.setText("Expiration: " + formatted);
+	  	         // Let's get the root layout and add our ImageView
+	  	         LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.main);
+	  	        
+	  	         LinearLayout title = new LinearLayout(this.getActivity());
+	  	         title.setOrientation(LinearLayout.VERTICAL);
+	  	         LinearLayout desc = new LinearLayout(this.getActivity());
+	  	         desc.setOrientation(LinearLayout.HORIZONTAL);
+	  	         desc.setBackgroundColor(Color.parseColor("#ededed"));
+	  	         
+	  	         title.addView(name);
+	  	         title.addView(amount);
+	  	         title.addView(expiration);
+	  	         
+	  	         desc.addView(image, 0, param);
+	  	         desc.addView(title, 1,textParams);
+	  	
+	  	   
+	  	         desc.setOnClickListener( new View.OnClickListener(){
+		        	public void onClick( View view ){
+		        		prepareItem(grocery);
+	
+		        	}
+	  	         } );
+	  	         layout.addView(desc, layoutParams);  
+	         }
   	         
-  	         if (mPreferences.getThreshold() >= (100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount())))){
-  	        	 
-  	        	 lowToast.append(grocery.getName() + ", ");
-  	         }
-  	         
-  	         Date dateEx = new Date(Long.parseLong(grocery.getExpiryDate())*1000L);
-  	         Date dateAd = new Date(Long.parseLong(grocery.getDateAdded())*1000L);
-	         DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-	         format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-	         String formatted = format.format(dateEx);
-	         String formattedAdded = format.format(dateAd);
-	         grocery.setExpiryDate(formatted);
-	         grocery.setDateAdded(formattedAdded);
-  	         expiration.setText("Expiration: " + formatted);
-  	         // Let's get the root layout and add our ImageView
-  	         LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.main);
-  	        
-  	         LinearLayout title = new LinearLayout(this.getActivity());
-  	         title.setOrientation(LinearLayout.VERTICAL);
-  	         LinearLayout desc = new LinearLayout(this.getActivity());
-  	         desc.setOrientation(LinearLayout.HORIZONTAL);
-  	         desc.setBackgroundColor(Color.parseColor("#ededed"));
-  	         
-  	         title.addView(name);
-  	         title.addView(amount);
-  	         title.addView(expiration);
-  	         
-  	         desc.addView(image, 0, param);
-  	         desc.addView(title, 1,textParams);
-  	         
-  	   
-  	         desc.setOnClickListener( new View.OnClickListener(){
-	        	public void onClick( View view ){
-	        		prepareItem(grocery);
-
-	        	}
-  	         } );
-  	         layout.addView(desc, layoutParams);  
-
           }       
-  	     if (lowToast.length() > 0){
-  	    	 lowToast.setLength(lowToast.length() - 2);
-  	    	Toast.makeText(this.getActivity(), "WARNING - Low Items: " + lowToast, Toast.LENGTH_LONG).show();
-  	     }
+ 
         
         return rootView;
 		
 	}
     private void prepareItem(Grocery grocery){
-		Intent myIntent = new Intent(getActivity(), ItemView.class);
+		Intent myIntent = new Intent(getActivity(), ShoppingList.class);
 		myIntent.putExtra("name", grocery.getName());
 		myIntent.putExtra("barcode",grocery.getBarcode());	
 		myIntent.putExtra("category",grocery.getCategory());
 		myIntent.putExtra("expiryDate",grocery.getExpiryDate());
 		myIntent.putExtra("dateAdded", grocery.getDateAdded());
 		myIntent.putExtra("price",grocery.getPrice());
-		myIntent.putExtra("status",grocery.getStatus());
-		myIntent.putExtra("username", username);
-		myIntent.putExtra("password", password);
 		startActivity(myIntent);
     }
     private void getJSON() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
@@ -240,18 +226,13 @@ public class Inventory extends Fragment{
 				            grocery.setBarcode(oneObject.getString("Barcode"));
 				            grocery.setCategory(oneObject.getString("CategoryId"));
 				            grocery.setDateAdded(oneObject.getString("DateAdded"));
-				            grocery.setStatus(oneObject.getString("Status"));
 				            
 				                
 				            // Formats the date in the CET timezone   
 				           //String myDate = df2.format(oneObject.getString("ExpiryDate"));
 				            
 				            grocery.setExpiryDate(oneObject.getString("ExpiryDate"));
-				            if (grocery.getStatus().equals("0")){
-				            	grocery.setName(oneObject.getString("Name").replace("_", " "));
-				            }else{
-				            	grocery.setName(oneObject.getString("Name").replace("_", " ") + " (Checked Out)");
-				            }
+				            grocery.setName(oneObject.getString("Name").replace("_", " "));
 				            grocery.setPrice(oneObject.getString("Price"));
 				            groceries.add(grocery);
 				            lastName = oneObject.getString("Name");
