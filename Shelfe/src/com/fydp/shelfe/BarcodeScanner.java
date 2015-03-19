@@ -120,6 +120,7 @@ public class BarcodeScanner extends Fragment {
 		    	
 	    		Fragment itemFrag = new TempItemAdd(); 
 		        Bundle bundle = new Bundle();
+		        bundle.putString("barcode", UPC);
 		        bundle.putString("name", name);
 		        itemFrag.setArguments(bundle);
 		        
@@ -128,7 +129,7 @@ public class BarcodeScanner extends Fragment {
 		        // Replace whatever is in the fragment_container view with this fragment,
 		        // and add the transaction to the back stack
 		        transaction.replace(R.id.container, itemFrag);
-		        transaction.addToBackStack(null);
+		        //transaction.addToBackStack(null);
 
 		        // Commit the transaction
 		        transaction.commit(); 

@@ -58,6 +58,7 @@ public class TempItemAdd extends Fragment{
 	protected EditText _price;
 	protected EditText _date;
 	protected Button _skip;
+	protected String _barcode;
 	
 	private String username = null;
 	private String password = null;
@@ -112,6 +113,7 @@ public class TempItemAdd extends Fragment{
         	}
         	_name.setText(this.getArguments().getString("name"));
         	_category.setSelection(this.getArguments().getInt("category"));
+        	_barcode = this.getArguments().getString("barcode");
         }
         changeDate = (EditText) rootView.findViewById(R.id.changeDate);
         
@@ -186,13 +188,16 @@ public class TempItemAdd extends Fragment{
  	      SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
  	      Date date = df.parse(str);
  	      long epoch = date.getTime()/1000L;
-
+ 	      
+ 	      if (_barcode == null || _barcode.equals("")){
+ 	    	  _barcode = "1234567888";
+ 	      }
  	    	String call = 
  	    			
  	    			"http://shelfe.host22.com/service/Service.php?method=addItem" + 
  	    			"&username=" + username + 
  	    			"&password=" + password +
- 	    			"&Barcode=1234567888" + 
+ 	    			"&Barcode=" + _barcode + 
  	    			"&CategoryId=" + catId.getCategory(_category.getSelectedItem().toString()) + 
  	    			"&ExpiryDate=" + epoch + 
  	    			"&Name=" + _name.getText() + 
