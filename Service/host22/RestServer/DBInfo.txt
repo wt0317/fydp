@@ -1,7 +1,0 @@
-$mysql_host = "mysql7.000webhost.com";
-$mysql_database = "a6344767_shelfe";
-$mysql_user = "a6344767_shelfe";
-$mysql_password = "fydp24";
-
-
-http://members.000webhost.com/cpanel.php?accountID=16735438&login_hash=zENnrqzM4NQZYwZF
