@@ -24,7 +24,7 @@
 					$username = $getUser[0];
 				}
 				
-				$checkForNewItems = mysql_query("SELECT * FROM pendingInventory WHERE username='".$username."' ORDER BY Status DESC LIMIT 1");
+				$checkForNewItems = mysql_query("SELECT * FROM pendingInventory WHERE username='".$username."' AND Status='1'");
 				
 				//New Item Added
 				if(mysql_num_rows($checkForNewItems) != 0){
@@ -43,6 +43,7 @@
 					}
 					
 					mysql_query("DELETE FROM pendingInventory WHERE username='".$username."' AND Status='".$Status."'");
+					mysql_query("UPDATE pendingInventory SET Status=Status-1 WHERE username='".$username."' AND Status<>'0'");
 				}
 				//Item Checked Back In
 				else{
@@ -113,14 +114,25 @@
 					}
 				}
 				
-				$checkShelfRegion = mysql_query("SELECT Status FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND ".$ShelfRegionCOr);
-			
-				if(mysql_num_rows($checkShelfRegion) == 0){
-					$DB_Connect->close();
-					return array("Error" => "Invalid Shelf ID and Region combination");
+				$checkItems = mysql_query("SELECT DISTINCT Name FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND ".$ShelfRegionCOr);
+				
+				$items = mysql_fetch_array($checkItems);
+				
+				$itemCount = 0;
+				$countArray = array();
+				
+				foreach($items as $item){
+					$getShelfRegions = mysql_query("SELECT ShelfRegion FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$item."'");
+					$regionCount = 0;
+					while($region = mysql_fetch_array($getShelfRegions)){
+						$regionCount++;
+					}
+					$countArray[$itemCount] = $regionCount;
 				}
 				
-				mysql_query("UPDATE inventory SET Status='".$curOut."', ShelfId='-1', ShelfRegion='-1' WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND ".$ShelfRegionCOr);
+				$maxRegions = array_keys($countArray, max($countArray));
+				
+				mysql_query("UPDATE inventory SET Status='".$curOut."', ShelfId='-1', ShelfRegion='-1' WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$items[$maxRegions[0]]."'");
 			}
 			else{
 				$DB_Connect->close();
@@ -142,6 +154,21 @@
 			if($auth == 0){
 				$DB_Connect->close();
 				return array("Authentication" => "Failed");
+			}
+			
+			$nameCheck = "(Name='".$Name."' OR Name='".$Name."_1' OR Name='".$Name."_2' OR Name='".$Name."_3' OR Name='".$Name."_4')";
+			
+			$checkIfNamedAlreadyInInventory = mysql_query("SELECT DISTINCT Name FROM inventory WHERE username='".$username."' AND ".$nameCheck."");
+			
+			$numDuplicates = mysql_num_rows($checkIfNamedAlreadyInInventory);
+			
+			$checkIfNamedAlreadyInPending = mysql_query("SELECT DISTINCT Name FROM pendingInventory WHERE username='".$username."' AND ".$nameCheck."");
+			
+			$numDuplicates += mysql_num_rows($checkIfNamedAlreadyInPending);
+			
+			if($numDuplicates > 0)
+			{
+				$Name = $Name."_".$numDuplicates;
 			}
 			
 			$getMaxStatus = mysql_query("SELECT MAX(Status) FROM pendingInventory WHERE username='".$username."' LIMIT 1");
