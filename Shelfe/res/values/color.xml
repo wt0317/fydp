@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+ <color name="lines">#33B5E5</color>
  <color name="clicked">#007A00</color>
  <color name="notclicked">#33B5E5</color>
  <color name="White">#FFFFFF</color>

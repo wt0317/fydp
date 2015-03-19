@@ -129,6 +129,9 @@ public class Register extends ActionBarActivity {
 		    		this.finish();
 		    		Intent myIntent = new Intent(Register.this, MainActivity.class);
 		    		startActivity(myIntent);
+		    	}else{
+		    		Toast.makeText(getApplicationContext(), "Invalid email and/or passcode", 
+							Toast.LENGTH_SHORT).show();
 		    	}
 		    }
 		}

@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -23,14 +24,18 @@ import org.apache.http.params.BasicHttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.fydp.shelfe.R.drawable;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -41,6 +46,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Inventory extends Fragment{
 
@@ -50,6 +56,8 @@ public class Inventory extends Fragment{
 	private String lastName = "";
 	private String username = null;
 	private String password = null;
+	private SharedPreferences mSettings;
+	private Preferences mPreferences;
 	public Inventory() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
 	   	 Log.i(TAG, "[ACTIVITY] Inventory");
 	   	 
@@ -65,6 +73,10 @@ public class Inventory extends Fragment{
             Bundle savedInstanceState) {
     	Log.i(TAG, "onCreateView");
     	setHasOptionsMenu(true);
+    	
+    	mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mPreferences = new Preferences(mSettings);
+    	
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
 		
@@ -99,7 +111,7 @@ public class Inventory extends Fragment{
           layoutParams.setMargins(0, 5, 0, 10);
           
   	     
-        
+        StringBuffer lowToast = new StringBuffer();
           
   	     for (final Grocery grocery : groceries){
 
@@ -115,12 +127,22 @@ public class Inventory extends Fragment{
   	         amount.setTextColor(amountColor(grocery.getCurrentAmount(), grocery.getInitialAmount()));
   	         TextView expiration = new TextView(this.getActivity());
   	         expiration.setGravity(Gravity.CENTER);
-  	      	expiration.setTextColor(expiryColor(String.valueOf(System.currentTimeMillis()/1000), grocery.getExpiryDate()));
+  	      	 expiration.setTextColor(expiryColor(String.valueOf(System.currentTimeMillis()/1000), grocery.getExpiryDate()));
   	         
   	         
   	         name.setText(grocery.getName());
-  	         amount.setText(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
-	            
+  	         if (!mPreferences.getAdminMode()){
+  	        	amount.setText(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
+  	         } else {
+  	        	amount.setText(grocery.getCurrentAmount() + "/" + grocery.getInitialAmount());
+  	         }
+  	                     
+  	         
+  	         if (mPreferences.getThreshold() >= (100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount())))){
+  	        	 
+  	        	 lowToast.append(grocery.getName() + ", ");
+  	         }
+  	         
   	         Date dateEx = new Date(Long.parseLong(grocery.getExpiryDate())*1000L);
   	         Date dateAd = new Date(Long.parseLong(grocery.getDateAdded())*1000L);
 	         DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -145,7 +167,7 @@ public class Inventory extends Fragment{
   	         
   	         desc.addView(image, 0, param);
   	         desc.addView(title, 1,textParams);
-  	
+  	         
   	   
   	         desc.setOnClickListener( new View.OnClickListener(){
 	        	public void onClick( View view ){
@@ -154,9 +176,12 @@ public class Inventory extends Fragment{
 	        	}
   	         } );
   	         layout.addView(desc, layoutParams);  
-  	         
+
           }       
- 
+  	     if (lowToast.length() > 0){
+  	    	 lowToast.setLength(lowToast.length() - 2);
+  	    	Toast.makeText(this.getActivity(), "WARNING - Low Items: " + lowToast, Toast.LENGTH_LONG).show();
+  	     }
         
         return rootView;
 		
@@ -222,7 +247,11 @@ public class Inventory extends Fragment{
 				           //String myDate = df2.format(oneObject.getString("ExpiryDate"));
 				            
 				            grocery.setExpiryDate(oneObject.getString("ExpiryDate"));
-				            grocery.setName(oneObject.getString("Name").replace("_", " "));
+				            if (grocery.getStatus().equals("0")){
+				            	grocery.setName(oneObject.getString("Name").replace("_", " "));
+				            }else{
+				            	grocery.setName(oneObject.getString("Name").replace("_", " ") + " (Checked Out)");
+				            }
 				            grocery.setPrice(oneObject.getString("Price"));
 				            groceries.add(grocery);
 				            lastName = oneObject.getString("Name");

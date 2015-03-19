@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -23,14 +24,18 @@ import org.apache.http.params.BasicHttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.fydp.shelfe.R.drawable;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -50,6 +55,8 @@ public class ShoppingList extends Fragment{
 	private String lastName = "";
 	private String username = null;
 	private String password = null;
+	private SharedPreferences mSettings;
+	private Preferences mPreferences;
 	public ShoppingList() throws JSONException, URISyntaxException, ClientProtocolException, IOException, ParseException{
 	   	 Log.i(TAG, "[ACTIVITY] Inventory");
 	   	 
@@ -65,6 +72,10 @@ public class ShoppingList extends Fragment{
             Bundle savedInstanceState) {
     	Log.i(TAG, "onCreateView");
     	setHasOptionsMenu(true);
+    	
+    	mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mPreferences = new Preferences(mSettings);
+        
     	container.removeAllViews();
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(R.color.notclicked));
@@ -122,7 +133,7 @@ public class ShoppingList extends Fragment{
   	         name.setText(grocery.getName());
   	         double percent = Double.parseDouble(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))));
   	         amount.setText(new DecimalFormat("##.#").format(100*(Double.parseDouble(grocery.getCurrentAmount())/Double.parseDouble(grocery.getInitialAmount()))) + "%");
-	         if (percent < 50){ 
+	         if (percent < mPreferences.getThreshold()){ 
 	  	         Date dateEx = new Date(Long.parseLong(grocery.getExpiryDate())*1000L);
 	  	         Date dateAd = new Date(Long.parseLong(grocery.getDateAdded())*1000L);
 		         DateFormat format = new SimpleDateFormat("dd-MM-yyyy");

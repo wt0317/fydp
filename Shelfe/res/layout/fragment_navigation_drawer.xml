@@ -2,9 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3389e5"
+    android:background="#222222"
+    android:textColor="#33B5E5"
     android:choiceMode="singleChoice"
-    android:divider="@color/White"
-    android:dividerHeight="2dp"
+    android:divider="@color/lines"
+    android:dividerHeight="1dp"
     tools:context="com.fydp.shelfe.NavigationDrawerFragment" />
 

@@ -164,6 +164,7 @@ public class TempItemAdd extends Fragment{
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			EditText changeDate = (EditText) getActivity().findViewById(R.id.changeDate);
+			monthOfYear++;
 			changeDate.setText(dayOfMonth + "-" + monthOfYear + "-" + year);
 			// TODO Auto-generated method stub
 			
