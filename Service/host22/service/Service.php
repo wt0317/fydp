@@ -15,6 +15,8 @@
 				return array("Authentication" => "Failed");
 			}
 			
+			self::log("itemIn");
+			
 			$ShelfRegions = explode(",", $ShelfRegions);
 			
 			$getUserForShelf = mysql_query("SELECT username FROM shelfUserMapping WHERE ShelfId='".$ShelfId."' LIMIT 1");
@@ -50,6 +52,7 @@
 					$getDataQuery = mysql_query("SELECT * FROM inventory WHERE username='".$username."' AND Status='1'");
 					
 					if(mysql_num_rows($getDataQuery) == 0){
+						self::log("No items are currently checked out.");
 						$DB_Connect->close();
 						return array("Error" => "No items are currently checked out.");
 					}
@@ -72,6 +75,7 @@
 				}
 			}
 			else{
+				self::log("Shelf not associated with any users.");
 				$DB_Connect->close();
 				return array("Error" => "Shelf not associated with any users.");
 			}
@@ -91,6 +95,8 @@
 				$DB_Connect->close();
 				return array("Authentication" => "Failed");
 			}
+			
+			self::log("itemOut");
 			
 			$getUserForShelf = mysql_query("SELECT username FROM shelfUserMapping WHERE ShelfId='".$ShelfId."' LIMIT 1");
 			
@@ -118,35 +124,66 @@
 				
 				if(mysql_num_rows($checkItems) == 0)
 				{
+					self::log("No items exist in provided regions.");
 					$DB_Connect->close();
 					return array("Error" => "No items exist in provided regions.");
 				}
-				
-				$items = mysql_fetch_array($checkItems);
-				
+								
 				$itemCount = 0;
 				$countArray = array();
-				
-				foreach($items as $item){
-					$getShelfRegions = mysql_query("SELECT ShelfRegion FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$item."'");
+				$matchArray = array();
+				$nameArray = array();
+								
+				while($item = mysql_fetch_array($checkItems)){
+					$nameArray[$itemCount] = $item[0];
+					$getShelfRegions = mysql_query("SELECT ShelfRegion FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$item[0]."'");
 					$regionCount = 0;
+					$numGetShelfRegions = mysql_num_rows($getShelfRegions);
 					while($region = mysql_fetch_array($getShelfRegions)){
-						$regionCount++;
+						foreach($ShelfRegions as $r){
+							if($r == $region[0])
+							{
+								$regionCount++;
+								break;
+							}
+						}
 					}
-					$countArray[$itemCount] = $regionCount;
+					$matchArray[$itemCount] = $regionCount;
+					$countArray[$itemCount] = $regionCount/$numGetShelfRegions*100;
+					$itemCount++;
 				}
-				
-				$maxRegions = array_keys($countArray, max($countArray));
-				
-				mysql_query("UPDATE inventory SET Status='".$curOut."', ShelfId='-1', ShelfRegion='-1' WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$items[$maxRegions[0]]."'");
+								
+				$maxRegion = self::getMaxRegion($countArray, $matchArray);
+								
+				mysql_query("UPDATE inventory SET Status='".$curOut."', ShelfId='-1', ShelfRegion='-1' WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$nameArray[$maxRegion]."'");
 			}
 			else{
+				self::log("Shelf not associated with any users.");
 				$DB_Connect->close();
 				return array("Error" => "Shelf not associated with any users.");
 			}
 			
 			$DB_Connect->close();
 			return array("Success" => "true");
+		}
+		
+		public function getMaxRegion($percentageCount, $matchCount){
+			$maxIndex = 0;
+			
+			for($i = 1; $i <= count($percentageCount); $i++){
+				if($percentageCount[$i] > $percentageCount[$maxIndex])
+				{
+					$maxIndex = $i;
+				}
+				else if($percentageCount[$i] == $percentageCount[$maxIndex]){
+					if($matchCount[$i] > $matchCount[$maxIndex])
+					{
+						$maxIndex = $i;
+					}
+				}
+			}
+			
+			return $maxIndex;
 		}
 		
 		public function addItem($username, $password, $Barcode, $CategoryId, $ExpiryDate, $Name, $Price){
@@ -161,6 +198,8 @@
 				$DB_Connect->close();
 				return array("Authentication" => "Failed");
 			}
+			
+			self::log("addItem");
 			
 			$nameCheck = "(Name='".$Name."' OR Name='".$Name."_1' OR Name='".$Name."_2' OR Name='".$Name."_3' OR Name='".$Name."_4')";
 			
@@ -242,7 +281,7 @@
 			while($ShelfIds = mysql_fetch_array($getShelfIds)) {
 				$ShelfId = $ShelfIds['ShelfId'];
 				
-				$getInventory = mysql_query("SELECT * FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."'");
+				$getInventory = mysql_query("SELECT * FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' ORDER BY Name");
 				
 				while($Inventory = mysql_fetch_array($getInventory)){
 					$iArray = $Format->addInventoryArray($iArray, $Inventory['InitialAmount'], $Inventory['CurrentAmount'], $Inventory['Barcode'], $Inventory['CategoryId'], $Inventory['DateAdded'], $Inventory['ExpiryDate'], $Inventory['Name'], $Inventory['Price'], $Inventory['ShelfRegion'], $Inventory['Status']);
@@ -423,6 +462,12 @@
 			$DB_Connect->close();
 			return array("Success" => "true");
 		}
+		
+		public function log($message){
+			//if($debug){
+				mysql_query("INSERT INTO log (message) VALUES ('".$message."')");
+			//}
+		}
 	}
 	
 	class Keygen {
@@ -498,6 +543,8 @@
 	$rest = new RestServer();
 	$rest->addServiceClass(Service);
 	$rest->handle();
+	
+	$debug = true;
 	
 	exit;
 ?>
