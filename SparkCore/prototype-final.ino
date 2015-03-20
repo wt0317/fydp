@@ -93,13 +93,16 @@ void sendWebService() {
     			client.println(header);
     			client.flush();
 
-    			while (!serverReplied) {
+                int retryCount = 0;
+    			while (!serverReplied && retryCount < 10) {
         			//Read from Web Service
         			while (client.available()) {
         				char c = client.read();
         				Serial.print(c);
         				serverReplied = true;
         			}
+        			retryCount++;
+        			delay(100);
         		}
         		client.stop();
         		retryRequired = false;
