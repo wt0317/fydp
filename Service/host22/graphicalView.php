@@ -55,28 +55,44 @@
 			<head>
 				<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 				<style>
+					body {
+					  font: 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+					  color: #a8a7a8;
+					  background: #212121;
+					  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+					}
 					.grid{
-						width: 60%;
+						width: 80%;
 						height: 90%;
 						verticle-align: middle;
 						text-align: center;
 						border: solid black 1px;
 						border-collapse: collapse;
 						table-layout: fixed;
+						background: #2E2E2E;
 					}
 					
 					td{
-						border: 1px solid black;
+						border: 5px solid #404040;
+						-webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.06);
+						box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.06);
+						text-overflow: ellipsis;
 					}
 					
 					.label{
-						width: 60%;
+						width: 100%;
 						text-align: center;
+						font: 20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+						color: #C6C6C6;
+					}
+					
+					.placed{
+						color: #C6C6C6;
 					}
 				</style>
 			</head>
 			<body>
-				<table class="grid" id="grid">
+				<table class="grid" id="grid" align="center">
 					<tr>
 						<td id="0">0</td>
 						<td id="5">5</td>
@@ -136,7 +152,6 @@
 				<div class="label">
 					Front of Shelf
 				</div>
-			<body>
 HTML;
 
 	echo $baseTable;
@@ -152,7 +167,9 @@ HTML;
 		$DB_Connect->close();
 		$script = <<<SCRIPT
 			<script>
-				$('#grid').html("Invalid Username/Password");
+				$(document).ready(function(){
+					$('#grid').html("Invalid Username/Password");
+				});
 			</script>
 SCRIPT;
 		echo $script;
@@ -172,7 +189,12 @@ SCRIPT;
 			while($item = mysql_fetch_array($getItemList)){
 				$getInventory = mysql_query("SELECT ShelfRegion FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$item[0]."'");
 				while($id = mysql_fetch_array($getInventory)){
-					echo "<script>$('#".$id[0]."').html('".$item[0]."');</script>";
+					$formatted = "(".$id[0].") <span class=\"placed\">".str_replace("_", " ", $item[0])."</span>";
+					echo "<script> ".
+							"$(document).ready(function(){".
+								"$('#".$id[0]."').html('".$formatted."');".
+							"});".
+						"</script>";
 				}
 			}
 		}
@@ -180,5 +202,5 @@ SCRIPT;
 		$DB_Connect->close();
 	}	
 	
-	echo "</html>";
+	echo "</body></html>";
 ?>
