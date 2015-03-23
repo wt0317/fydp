@@ -11,6 +11,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Clear Inventory</string>
     <string name="action_settings">Settings</string>
+    <string name="graphical_view">Graphical View</string>
     <string name="hard_reset">Hard Reset</string>
     <string name="categories">Choose A Category...</string>
     

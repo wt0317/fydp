@@ -60,6 +60,7 @@ public class LoggedIn extends ActionBarActivity implements
 	static Inventory inFragment;
 	static BarcodeScanner bsFragment;
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -122,6 +123,9 @@ public class LoggedIn extends ActionBarActivity implements
 			menu.add(0, MENU_SETTINGS, 0, R.string.action_settings)
 	        .setShortcut('8', 's')
 	        .setIntent(new Intent(this, Settings.class));
+			menu.add(0, 9, 0, R.string.graphical_view)
+	        .setShortcut('9', 's')
+	        .setIntent(new Intent(this, GraphicalView.class));
 			if (mPreferences.getAdminMode()){
 				menu.add(0, 6, 0, R.string.hard_reset)
 				.setShortcut('6', 'h');
@@ -142,6 +146,14 @@ public class LoggedIn extends ActionBarActivity implements
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			return true;
+		}		
+		if (id == 9) {
+			Intent myIntent = new Intent(LoggedIn.this, GraphicalView.class);
+			/*myIntent.putExtra("username",username);
+			myIntent.putExtra("password",password);
+			finish();*/
+			startActivity(myIntent);
 			return true;
 		}
 		if (id == 6){

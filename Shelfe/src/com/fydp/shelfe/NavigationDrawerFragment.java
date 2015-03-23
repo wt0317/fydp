@@ -308,7 +308,7 @@ public class NavigationDrawerFragment extends Fragment {
 		    }
 		    FragmentManager fragmentManager = getFragmentManager();
 		    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		    Inventory newFragment = null;
+		    /*Inventory newFragment = null;
 			try {
 				newFragment = new Inventory();
 			} catch (JSONException
@@ -319,8 +319,8 @@ public class NavigationDrawerFragment extends Fragment {
 		    FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		    transaction.replace(R.id.main, newFragment);
 		    transaction.addToBackStack(null);
-		    transaction.commit();
-			Toast.makeText(getActivity(), "Inventory Cleared", Toast.LENGTH_LONG)
+		    transaction.commit();*/
+			Toast.makeText(this.getActivity(), "Inventory Cleared", Toast.LENGTH_LONG)
 					.show();
 			return true;
 		}
