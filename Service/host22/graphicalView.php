@@ -51,6 +51,21 @@
 		return array_change_key_case($_REQUEST, CASE_LOWER);;
 	}
 	
+	function getColor($amount){
+		if($amount > 70){
+			return "#27B700";
+		}
+		else if($amount > 50){
+			return "#EAF200";
+		}
+		else if($amount > 30){
+			return "#F29500";
+		}
+		else{
+			return "#CE0300";
+		}
+	}
+	
 	$baseTable = <<<HTML
 			<head>
 				<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
@@ -62,7 +77,7 @@
 					  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
 					}
 					.grid{
-						width: 80%;
+						width: 90%;
 						height: 90%;
 						verticle-align: middle;
 						text-align: center;
@@ -151,6 +166,22 @@
 				</table>
 				<div class="label">
 					Front of Shelf
+					<br/>
+					<span style="color:#27B700">
+						>70%
+					</span>
+					&nbsp;&nbsp;
+					<span style="color:#EAF200">
+						>50%
+					</span>
+					&nbsp;&nbsp;
+					<span style="color:#F29500">
+						>30%
+					</span>
+					&nbsp;&nbsp;
+					<span style="color:#CE0300">
+						>0%
+					</span>
 				</div>
 HTML;
 
@@ -185,14 +216,17 @@ SCRIPT;
 		while($ShelfIds = mysql_fetch_array($getShelfIds)) {
 			$ShelfId = $ShelfIds['ShelfId'];
 			
-			$getItemList = mysql_query("SELECT DISTINCT Name FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."'");
+			$getItemList = mysql_query("SELECT DISTINCT Name, InitialAmount, CurrentAmount FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."'");
 			while($item = mysql_fetch_array($getItemList)){
 				$getInventory = mysql_query("SELECT ShelfRegion FROM inventory WHERE username='".$username."' AND ShelfId='".$ShelfId."' AND Name='".$item[0]."'");
+				$code = getColor($item[2]/$item[1]*100);
+				
 				while($id = mysql_fetch_array($getInventory)){
 					$formatted = "(".$id[0].") <span class=\"placed\">".str_replace("_", " ", $item[0])."</span>";
 					echo "<script> ".
 							"$(document).ready(function(){".
 								"$('#".$id[0]."').html('".$formatted."');".
+								"$('#".$id[0]."').css('color','".$code."')".
 							"});".
 						"</script>";
 				}
