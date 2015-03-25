@@ -80,18 +80,25 @@ public class MainActivity extends ActionBarActivity {
 	    }
 		if (result != null){
 			    JSONObject jArray = new JSONObject(result);
-		    	String success = jArray.getString("Success");
-		    	
-		    	if (success.equals("true")){
-			
-					Intent myIntent = new Intent(MainActivity.this, LoggedIn.class);
-					myIntent.putExtra("username",username.getText().toString());
-					myIntent.putExtra("password",password.getText().toString());
-					finish();
-					startActivity(myIntent);
-		    	}
+			    
+			    if (jArray.has("Success")){
+			    	String success = jArray.getString("Success");
+			    	
+			    	if (success.equals("true")){
+				
+						Intent myIntent = new Intent(MainActivity.this, LoggedIn.class);
+						myIntent.putExtra("username",username.getText().toString());
+						myIntent.putExtra("password",password.getText().toString());
+						finish();
+						startActivity(myIntent);
+			    	}
+			    } else {
+			    	Toast.makeText(getApplicationContext(), "Sorry, wrong username or password!", 
+							Toast.LENGTH_SHORT).show();
+			    }
+			    
 		} else {
-			Toast.makeText(getApplicationContext(), "Seems like you 're not admin!", 
+			Toast.makeText(getApplicationContext(), "Sorry, wrong username or password!", 
 					Toast.LENGTH_SHORT).show();
 			numberOfRemainingLoginAttempts--;
 			attemptsLeftTV.setVisibility(View.VISIBLE);

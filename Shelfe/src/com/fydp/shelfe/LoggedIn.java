@@ -98,6 +98,7 @@ public class LoggedIn extends ActionBarActivity implements
 			break;
 		case 3:
 			mTitle = getString(R.string.title_section3);
+			break;
 		case 4:
 			mTitle = getString(R.string.title_section4);
 			break;
@@ -150,9 +151,9 @@ public class LoggedIn extends ActionBarActivity implements
 		}		
 		if (id == 9) {
 			Intent myIntent = new Intent(LoggedIn.this, GraphicalView.class);
-			/*myIntent.putExtra("username",username);
-			myIntent.putExtra("password",password);
-			finish();*/
+			Bundle bundle = getIntent().getExtras();
+			myIntent.putExtras(bundle);
+			/*finish();*/
 			startActivity(myIntent);
 			return true;
 		}
@@ -170,6 +171,27 @@ public class LoggedIn extends ActionBarActivity implements
 		    finally {
 		        try{if(inputStream != null)inputStream.close();}catch(Exception squish){}
 		    }
+		    
+			try {
+				Inventory inventory = new Inventory();
+				FragmentManager fragmentManager = getSupportFragmentManager();
+				fragmentManager.beginTransaction().replace(R.id.container, inventory).commit();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		    return false;
 		}
 		if (id == R.id.action_refresh) {

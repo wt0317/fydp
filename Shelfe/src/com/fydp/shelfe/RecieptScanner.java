@@ -191,7 +191,7 @@ public class RecieptScanner extends Fragment
     		String items = text.split("SUBTOTAL")[0];
 
 		    		System.out.println("text: " + items );
-		    		Pattern p = Pattern.compile("(.+)([^$]\\d+(\\.|\\‘|\\,)\\d{2})");
+		    		Pattern p = Pattern.compile("(.+)([^$]\\d+(\\.|\\‘|\\,|\\’)\\d{2})");
 		    		Matcher mr = p.matcher(items);
 			    	while (mr.find()) {
 			    		String name = mr.group(1);

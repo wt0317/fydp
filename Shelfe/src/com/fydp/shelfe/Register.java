@@ -137,6 +137,14 @@ public class Register extends ActionBarActivity {
 		}
 	}
 	
+	
+	public void backLogin(View view){
+
+    		this.finish();
+    		Intent myIntent = new Intent(Register.this, MainActivity.class);
+    		startActivity(myIntent);
+	}
+	
 	public void verifyUser(View view){
 		passText.setVisibility(View.VISIBLE);
 		passcode.setVisibility(View.VISIBLE);
